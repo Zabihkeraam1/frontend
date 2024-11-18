@@ -3,7 +3,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form';
 import z from 'zod';
-import { useAdminAuthStore } from '../../store/useAdminAuthStore';
+import { useAdminAuthStore } from '../../Store/useAdminAuthStore';
 
 // Updated schema to expect faculty as a number
 const Schema = z.object({
@@ -20,20 +20,18 @@ type FormFields = z.infer<typeof Schema>;
 
 const DashDepartment: React.FC = () => {
     const [faculties, setFaculties] = useState<Faculty[]>([]);
-    const { token } = useAdminAuthStore()
-
+    const { token } = useAdminAuthStore();
     useEffect(() => {
-        axios.get('http://localhost:8000/api/dashboard/faculties',
-            {
-                headers:{
-                  Authorization: `Bearer ${token}`
-                }
-              }
-        ).then((response) => {
+        axios.get('http://localhost:8000/api/dashboard/faculties', {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }).then((response) => {
             console.log("fac", response.data.data);
             setFaculties(response.data.data);
         });
     }, []);
+
     const { register, handleSubmit, formState: { errors } } = useForm<FormFields>({
         resolver: zodResolver(Schema)
     });
@@ -41,10 +39,10 @@ const DashDepartment: React.FC = () => {
     const onSubmit: SubmitHandler<FormFields> = (data) => {
         console.log(data);
         axios.post('http://localhost:8000/api/dashboard/departments', data, {
-            headers:{
-              Authorization: `Bearer ${token}`
+            headers: {
+                Authorization: `Bearer ${token}`
             }
-          })
+        })
             .then(response => {
                 console.log(response);
             });

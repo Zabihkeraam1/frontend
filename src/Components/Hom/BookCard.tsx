@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, { ReactNode, useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import Modal from '../Modal';
-import { useAuthStore } from '../../store/useAuthStore';
+import { useAuthStore } from '../../Store/useAuthStore';
 
 interface Book {
   translator: ReactNode;

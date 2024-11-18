@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { FaEdit, FaTrash, FaEye } from "react-icons/fa";
-import { AiOutlineCheckCircle } from "react-icons/ai";
+import { AiFillPrinter, AiOutlineCheckCircle } from "react-icons/ai";
 import axios from "axios";
 import ViewModal from "./ViewModal";
 import EditModal from "./EditModal";
 import DeleteModal from "./DeleteModal";
+import { useAdminAuthStore } from "../../Store/useAdminAuthStore";
+import PrintModal from "../PrintModal";
 
 type TableColumn<T> = {
   header: string;
@@ -19,7 +21,7 @@ type TableProps<T> = {
 
 type ActionType = "view" | "edit" | "delete";
 
-const ReusableTable = <T extends { user_id?: number }>({
+const ReusableTable = <T extends { id?: number }>({
   columns,
   data,
   component
@@ -36,12 +38,26 @@ const ReusableTable = <T extends { user_id?: number }>({
     setSelectedRow(null);
     setActionType(null);
   };
-
+  const [ openPrintModal, setOpenPrintModal ] = useState(false);
+  const [ userId, setUserId ] = useState<number|undefined>();
+  const handlePrint = (id:number|undefined) => {
+    console.log(id, "handleModal");
+    setOpenPrintModal(true);
+    setUserId(id);
+  };
+  const closePrintModal = () => {
+    setOpenPrintModal(false);
+    setUserId(undefined);
+  };
+  const { token } = useAdminAuthStore();
   const handleClick = (user_id: number | undefined) => {
     if (!user_id) return;
-    console.log("User_id: ", user_id);
     axios
-      .post(`http://localhost:8000/api/users/activate_user/${user_id}`)
+      .post(`http://localhost:8000/api/dashboard/users/activate_user/${user_id}`,{} ,{
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
       .then((response) => {
         console.log("response", response);
       })
@@ -76,9 +92,17 @@ const ReusableTable = <T extends { user_id?: number }>({
                       {component === "DeActiveUsers" && (
                         <button
                           className="p-1 text-blue-500 hover:text-blue-700"
-                          onClick={() => handleClick(row.user_id)}
+                          onClick={() => handleClick(row.id)}
                         >
                           <AiOutlineCheckCircle />
+                        </button>
+                      )}
+                      {component === "ActiveUsers" && (
+                        <button
+                          className="p-1 text-blue-500 hover:text-blue-700"
+                          onClick={() => handlePrint(row.id)}
+                        >
+                          <AiFillPrinter />
                         </button>
                       )}
                       <button
@@ -119,6 +143,7 @@ const ReusableTable = <T extends { user_id?: number }>({
         <EditModal selectedRow={selectedRow} closeModal={closeModal} />
       )}
       {actionType === "delete" && <DeleteModal closeModal={closeModal} />}
+      {openPrintModal && <PrintModal closeModal={closePrintModal} id={userId}/>}
     </div>
   );
 };

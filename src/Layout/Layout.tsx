@@ -1,5 +1,5 @@
 import { Outlet, useLocation } from "react-router";
-import Navbar from "../Components/Hom/navbar/Navbar";
+// import Navbar from "../Components/Hom/Navbar";
 import Footer from "../Components/Footer";
 import { useEffect, useState } from "react";
 // import DashNavbar from "../Components/Dashboard/DashNavbar";
@@ -26,8 +26,8 @@ export default function Layout() {
           </div>
         ) : (
           <div >
-            <Navbar />
-            <Outlet/>
+            
+            <Outlet />
             <Footer />
           </div>
         )

@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { GrFormClose } from 'react-icons/gr';
 import { TiEyeOutline } from 'react-icons/ti';
 import { Link } from 'react-router-dom';
-import { useAuthStore } from '../../../store/useAuthStore';
+import { useAuthStore } from '../../../Store/useAuthStore';
 
 
 const CartModal = ({ toggleCartModal }) => {

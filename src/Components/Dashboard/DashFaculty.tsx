@@ -3,7 +3,7 @@ import axios from 'axios';
 import React from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form';
 import z from 'zod';
-import { useAdminAuthStore } from '../../store/useAdminAuthStore';
+import { useAdminAuthStore } from '../../Store/useAdminAuthStore';
 const Schema = z.object({
     name: z.string().min(2),
 });
@@ -12,15 +12,18 @@ const DashFaculty: React.FC = () => {
     const { register, handleSubmit, formState: {errors} } = useForm<FormFields>({
         resolver: zodResolver(Schema)
     });
-    const { token }  = useAdminAuthStore()
+    const { token } = useAdminAuthStore();
+    console.log("Admin token: ", token);
     const onSubmit:SubmitHandler<FormFields> = (data) => {
-        axios.post('http://localhost:8000/api/dashboard/faculties', data, {
-          headers:{
-            Authorization: `Bearer ${token}`
-          }
-        }).then(response => {
-            console.log('add faculty respon',response);
-        });
+      axios.post(
+        'http://localhost:8000/api/dashboard/faculties',
+        data,
+        {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+    );
     }
   return (
 <div className="w-full">

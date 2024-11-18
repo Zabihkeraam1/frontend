@@ -2,40 +2,44 @@ import React, { useEffect, useState, ReactNode } from "react";
 import Table from "../Table/Table";
 import { FaSearch } from "react-icons/fa";
 import axios from "axios";
+import { useAdminAuthStore } from "../../Store/useAdminAuthStore";
 
 interface User {
-  user_id: number;
+  id: number;
   firstName: string;
   lastName: string;
   email: string;
 }
 
 const columns = [
-  { header: "User ID", accessor: "user_id" },
+  { header: "User ID", accessor: "id" },
   { header: "FirstName", accessor: "firstName" },
   { header: "LastName", accessor: "lastName" },
   { header: "Email", accessor: "email" },
   { header: "Actions", accessor: "actions" },
 ];
 
-// Convert Users to Record<string, ReactNode>[]
 const convertUsersToRecords = (users: User[]): Record<string, ReactNode>[] => {
   return users.map((user) => ({
-    user_id: user.user_id,
+    id: user.id,
     firstName: user.firstName,
     lastName: user.lastName,
     email: user.email,
-    // Map additional properties as needed
   }));
 };
-
 const DashActiveUsers: React.FC = () => {
+  const { token } = useAdminAuthStore();
   const [users, setUsers] = useState<User[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
+    console.log(token);
     axios
-      .get("http://localhost:8000/api/dashboard/users/activated_users")
+      .get("http://localhost:8000/api/dashboard/users/activated_students", {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
       .then((response) => {
         setUsers(response.data.data);
         console.log(response);

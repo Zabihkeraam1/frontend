@@ -1,6 +1,3 @@
-
-
-
 import React, { useState } from "react";
 import { FaBook, FaChevronDown, FaCog, FaFile, FaUsers } from "react-icons/fa";
 import { RxDashboard } from "react-icons/rx";
@@ -9,43 +6,42 @@ import { Link, NavLink, useLocation } from "react-router-dom";
 import { HiArrowSmRight, HiOutlineUserGroup, HiUser } from "react-icons/hi";
 import { BiPencil } from "react-icons/bi";
 import { MdDescription } from "react-icons/md";
+import { useAdminAuthStore } from "../../Store/useAdminAuthStore";
 import axios from "axios";
-import { useAdminAuthStore } from "../../store/useAdminAuthStore";
 
 interface SidebarProps {
   isOpen: boolean;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
-  const location = useLocation(); // Get the current location
+  const location = useLocation();
 
-  // Function to determine if the link is active
+  const { type } = useAdminAuthStore();
   const isActive = (path:string) => location.search === path;
-  // Define type for openMenus state
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
-  const isAssistent =  true;
-  // Function to toggle a menu's open/close status
+  const isAssistant =  type === "assistant";
+  const isEmployee = type === "employee";
+  
+  
   const toggleMenu = (menu: string) => {
     setOpenMenus((prev) => ({
       ...prev,
-      [menu]: !prev[menu], // Toggle the specific menu's state
+      [menu]: !prev[menu],
     }));
   };
-  const { token, clearUser } = useAdminAuthStore()
-  const handleSignout =  () => {
-    console.log("Log out");
-    axios.post('http://localhost:8000/api/dashboard/admin/logout', {
-      headers:{
+  const { clearUser, token } = useAdminAuthStore();
+  const handleSignout = () =>{
+    console.log(token);
+    axios.post("http://localhost:8000/api/dashboard/admin/logout",{}, {
+      headers: {
         Authorization: `Bearer ${token}`
       }
     }).then((response)=>{
-      clearUser();
-      console.log(token);
-      if ( response.status === 200 ){
-        console.log("log out was successful!");
+      if(response.data.message === "Logged out successfully"){
+        clearUser();
       }
     })
-  };
+  }
 
   return (
     <div
@@ -74,7 +70,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
           </Link>
 
           {/* Books Menu */}
-          { isAssistent &&
+          { isEmployee &&
           (
             <>
             <li
@@ -223,7 +219,53 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
           )}
           </>
           )}
-
+          {/* Assistant side bar option */}
+          {
+            isAssistant &&
+              (
+                <>
+                            <li
+            className="pr-2 hover:bg-blue-900 flex items-center justify-between cursor-pointer"
+            onClick={() => toggleMenu("users")}
+          >
+            <div className="flex items-center hover:bg-blue-600 cursor-pointer w-full p-1">
+              <FaChevronDown
+                className={`ml-2 text-xs transition-transform ${openMenus.users ? "rotate-180" : ""}`}
+              />
+              کاربران
+            </div>
+          </li>
+          {openMenus.users && (
+            <ul className="mr-8 space-y-2">
+              <Link to="/dashboard?tab=employees">
+                <li className={`pr-2 py-2 flex items-center cursor-pointer ${isActive("?tab=users") ? "bg-blue-700 font-bold" : "hover:bg-blue-600"}`}>
+                  <span>{<HiOutlineUserGroup />}</span>
+                  تمام کاربران
+                </li>
+              </Link>
+              <Link to="/dashboard?tab=user-registration">
+                <li className={`pr-2 py-2 flex items-center cursor-pointer ${isActive("?tab=user-registration") ? "bg-blue-700 font-bold" : "hover:bg-blue-600"}`}>
+                  <span>{<HiOutlineUserGroup />}</span>
+                  اضافه کردن کاربر
+                </li>
+              </Link>
+              <Link to="/dashboard?tab=deactive-employees">
+                <li className={`pr-2 py-2 flex items-center cursor-pointer ${isActive("?tab=deactive-users") ? "bg-blue-700 font-bold" : "hover:bg-blue-600"}`}>
+                  <span>{<HiOutlineUserGroup />}</span>
+                  کاربران غیرفعال
+                </li>
+              </Link>
+              <Link to="/dashboard?tab=active-employees">
+                <li className={`pr-2 py-2 flex items-center cursor-pointer ${isActive("?tab=active-users") ? "bg-blue-700 font-bold" : "hover:bg-blue-600"}`}>
+                  <span>{<HiOutlineUserGroup />}</span>
+                  کاربران فعال
+                </li>
+              </Link>
+            </ul>
+          )}
+                </>
+              )
+          }
           {/* Employees Link */}
           <li className="pr-2 py-2 hover:bg-blue-600 flex items-center cursor-pointer gap-2">
             <FaUsers />

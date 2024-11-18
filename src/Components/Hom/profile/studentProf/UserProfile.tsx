@@ -4,7 +4,7 @@ import { IoIosArrowRoundBack } from "react-icons/io";
 import { IoBookOutline } from "react-icons/io5";
 import { TbUserEdit } from "react-icons/tb";
 import { Link, Outlet } from "react-router-dom";
-import { useAuthStore } from "../../../../store/useAuthStore";
+import { useAuthStore } from "../../../../Store/useAuthStore";
 
 const UserProfile = () => {
 

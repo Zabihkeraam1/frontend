@@ -9,8 +9,8 @@ import CollectionModal from './CollectionModal';
 import { HiChevronDown, HiChevronUp } from 'react-icons/hi';
 import CartModal from './CartModal';
 import ProfileModal from './ProfileModal';
-import { useAdminAuthStore } from '../../../store/useAdminAuthStore';
-import { useAuthStore } from '../../../store/useAuthStore';
+import { useAdminAuthStore } from '../../../Store/useAdminAuthStore';
+import { useAuthStore } from '../../../Store/useAuthStore';
 
 const Navbar = () => {
   const [showNav, setShowNav] = useState(true);

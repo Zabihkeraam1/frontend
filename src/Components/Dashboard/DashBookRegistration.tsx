@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { useAdminAuthStore } from "../../store/useAdminAuthStore";
+import { useAdminAuthStore } from "../../Store/useAdminAuthStore";
 
 type FormValues = {
   title: string;
@@ -20,8 +20,8 @@ type FormValues = {
   lockerNumber: string;
   isbn: string;
   description: string;
-  total: number; //add
-  edition: string; //add
+  total: number;
+  edition: string;
   code:string;
 };
 
@@ -46,38 +46,31 @@ const DashBookRegistration: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [response, setResponse] = useState<string>('');
   const [selectedImage, setSelectedImage] = useState<File | null>(null); 
-  
+  const { token } = useAdminAuthStore();
   
   const { register, handleSubmit, formState: { errors }, reset } = useForm<FormValues>();
-  const { token } = useAdminAuthStore();
 
   useEffect(() => {
-    axios.get("http://localhost:8000/api/dashboard/departments",
-      {
-        headers:{
+    axios.get("http://localhost:8000/api/dashboard/departments",{
+      headers: {
           Authorization: `Bearer ${token}`
-        }
       }
-    ).then((response) => {
+  }).then((response) => {
       setFaculties(response.data.data);
     });
-    axios.get("http://localhost:8000/api/dashboard/sections",
-      {
-        headers:{
+    axios.get("http://localhost:8000/api/dashboard/sections", {
+      headers: {
           Authorization: `Bearer ${token}`
-        }
       }
-    ).then((response) => {
+  }).then((response) => {
       setShelves(response.data.data);
       console.log(response.data.data);
     });
-    axios.get("http://localhost:8000/api/dashboard/categories",
-      {
-        headers:{
+    axios.get("http://localhost:8000/api/dashboard/categories", {
+      headers: {
           Authorization: `Bearer ${token}`
-        }
       }
-    ).then((response) => {
+  }).then((response) => {
       setCategories(response.data.data);
       console.log(response.data.data);
     });
@@ -108,13 +101,13 @@ const DashBookRegistration: React.FC = () => {
     formData.append('description', data.description);
     formData.append('total', String(data.total));
     formData.append('edition', data.edition);
-    formData.append('code','DH')
+    formData.append('code',data.code)
 
     // Append image
     if (selectedImage) {
       formData.append("image", selectedImage);
     }
-
+    console.log(token);
     axios
       .post("http://localhost:8000/api/dashboard/books", formData, {
         headers: {
@@ -227,17 +220,20 @@ const DashBookRegistration: React.FC = () => {
 
           <div className="flex flex-col">
             <label className="font-semibold">زبان</label>
-            <input
-              type="text"
+            <select
               {...register("lang", { required: "این فیلد اجباری است" })}
               className="input"
-            />
+            >
+              <option value="fa">فارسی</option>
+              <option value="en">انگلیسی</option>
+            </select>
             {errors.lang && (
               <span className="text-red-500 text-sm">
                 {errors.lang.message}
               </span>
             )}
           </div>
+
 
           <div className="flex flex-col">
             <label className="font-semibold">تعداد</label>
@@ -307,25 +303,6 @@ const DashBookRegistration: React.FC = () => {
             )}
           </div>
           <div className="flex flex-col">
-            <label className="font-semibold">DDS</label>
-            <input
-              type="text"
-              {...register("code", { required: "این فیلد اجباری است" })}
-              className="input"
-            />
-            {errors.code && (
-              <span className="text-red-500 text-sm">
-                {errors.code.message}
-              </span>
-            )}
-          </div>
-        
-
-     
-
-
-          {/* NEED EDITING */}
-          <div className="flex flex-col">
             <label className="font-semibold">ISBN</label>
             <input
               type="text"
@@ -335,6 +312,22 @@ const DashBookRegistration: React.FC = () => {
             {errors.isbn && (
               <span className="text-red-500 text-sm">
                 {errors.isbn.message}
+              </span>
+            )}
+          </div>
+
+
+          {/* NEED EDITING */}
+          <div className="flex flex-col">
+            <label className="font-semibold">DDS</label>
+            <input
+              type="text"
+              {...register("code", { required: "این فیلد اجباری است" })}
+              className="input"
+            />
+            {errors.code && (
+              <span className="text-red-500 text-sm">
+                {errors.code.message}
               </span>
             )}
           </div>

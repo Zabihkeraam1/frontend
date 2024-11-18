@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useState } from 'react';
-import { useAdminAuthStore } from '../store/useAdminAuthStore';
+import { useAdminAuthStore } from '../Store/useAdminAuthStore';
 
 const signInSchema = z.object({
   email: z.string().min(1, "Email is required").email("Invalid email format"),
@@ -16,7 +16,8 @@ const signInSchema = z.object({
 type SignInFormData = z.infer<typeof signInSchema>;
 
 const AdminLogin: React.FC = () => {
-  const { setUser } = useAdminAuthStore();
+  const { setUser, token } = useAdminAuthStore();
+  console.log("Admin login", token);
   const {
     register,
     handleSubmit,
@@ -51,16 +52,30 @@ const AdminLogin: React.FC = () => {
     console.log(data);
     axios.post('http://localhost:8000/api/admin/login', data).then((response) => {
       if(response.status === 200) {
-        console.log("response", response);
-        const loggedInUser = { email: response.data.employee.email, status: response.data.
-          employee.status, type: response.data.employee.type };
-        const userToken = response.data.token;
-        const type = response.data.employee.type;
-        const userIsAdmin = true;
-        setUser(loggedInUser, userToken, userIsAdmin, type );
-        console.log("logged in user: ", loggedInUser);
-        console.log("user token: ", userToken);
-        setResponse(response.data.message);
+        const employee = response.data.employee?.type === 'employee';
+        if(employee){
+          const loggedInUser = { email: response.data.employee.email, status: response.data.
+            employee.status, type: response.data.employee.type };
+          const userToken = response.data.token;
+          const userIsAdmin = true;
+          const type = response.data.employee.type
+          setUser(loggedInUser, userToken, userIsAdmin, type);
+          setResponse(response.data.message);
+          }
+        else {
+          const loggedInUser = { email: response.data.$assistant
+            .email, status: response.data.
+            $assistant
+              .status, type: response.data.$assistant
+              .type };
+          const userToken = response.data.token;
+          const userIsAdmin = true;
+          const type = response.data.$assistant
+          .type
+          setUser(loggedInUser, userToken, userIsAdmin, type);
+          setResponse(response.data.message);  
+        }
+       
       }
     });
   };

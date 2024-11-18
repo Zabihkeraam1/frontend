@@ -3,6 +3,7 @@ import React, { useEffect, useState, ReactNode } from "react";
 import axios from "axios";
 import Table from "../Table/Table";
 import { FaSearch } from "react-icons/fa";
+import { useAdminAuthStore } from "../../Store/useAdminAuthStore";
 
 interface Book {
   id: number;
@@ -30,8 +31,13 @@ const convertBooksToRecords = (books: Book[]): Record<string, ReactNode>[] => {
 const DashBooks: React.FC = () => {
   const [books, setBooks] = useState<Book[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const { token } = useAdminAuthStore();
   useEffect(() => {
-    axios.get("http://localhost:8000/api/dashboard/books").then((response) => {
+    axios.get("http://localhost:8000/api/dashboard/books", {
+      headers: {
+          Authorization: `Bearer ${token}`
+      }
+  }).then((response) => {
       setBooks(response.data.data);
       console.log(response);
     });

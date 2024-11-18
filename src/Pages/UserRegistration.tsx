@@ -4,13 +4,13 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { useAuthStore } from '../store/useAuthStore';
+import { useAuthStore } from '../Store/useAuthStore';
 
 const schema = z.object({
     firstName: z.string().min(1, 'نام الزامی است'),
     lastName: z.string().min(1, 'نام خانوادگی الزامی است'),
     email: z.string().email('ایمیل نامعتبر است'),
-    phone: z.number().min(1000000000, 'شماره تلفن نامعتبر است').max(9999999999, 'نمبر تماس نباید بیشتر از ۱۰ رقم باشد'),
+    phone: z.number().min(100000000, 'شماره تلفن نامعتبر است').max(9999999999, 'نمبر تماس نباید بیشتر از ۱۰ رقم باشد'),
     password: z.string().min(6, 'رمز عبور باید حداقل 6 کاراکتر باشد'),
     nic: z.string().min(1, 'نمبر تذکره ضروری مباشد'),
     nin: z.string().min(1, 'آی‌دی کارت پوهنتون ضروری میباشد'),
@@ -25,7 +25,7 @@ const schema = z.object({
 interface Faculty{
     id: number;
     name: string;
-    deparments: Department[];
+    departments: Department[];
 }
 
 interface Department{
@@ -98,8 +98,8 @@ const UserRegistration: React.FC = () => {
             if(response.status === 200) {
                 const loggedInUser = { email: response.data.user.email, status: response.data.user.status, type: response.data.user.type };
                 const userToken = response.data.token;
-                const userIsAdmin = true;
-                setUser(loggedInUser, userToken, userIsAdmin);
+                const isLoggedIn = true;
+                setUser(loggedInUser, userToken, isLoggedIn);
                 console.log("logged in user: ", loggedInUser);
                 console.log("user token: ", userToken);
                 navigate('/')
@@ -148,7 +148,7 @@ const UserRegistration: React.FC = () => {
                         <label htmlFor="department" className="font-semibold"> دپارتمنت</label>
                         <select {...register("dep_id")} id="department" className="input">
                         <option value="">انتخاب دیپارتمنت</option>
-                            {selectedFac && selectedFac.deparments.map((d, index) => (
+                            {selectedFac && selectedFac.departments.map((d, index) => (
                                 <option key={index} value={d.id}>{d.name}</option>
                             ))}
                         </select>
@@ -169,7 +169,7 @@ const UserRegistration: React.FC = () => {
 
                     <div className="flex flex-col">
                         <label htmlFor="phone" className="font-semibold">تلفن</label>
-                        <input {...register('phone', { valueAsNumber: true })} id='phone' type="number" placeholder='شماره تلفن شما' className="input"/>
+                        <input {...register('phone', { valueAsNumber: true })} id='phone' type="phone" placeholder='شماره تلفن شما' className="input"/>
                         {errors.phone && <span className="text-red-500">{errors.phone.message}</span>}
                     </div>
                     <div className="flex flex-col">

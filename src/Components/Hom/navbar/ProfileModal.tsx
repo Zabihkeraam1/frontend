@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { CiLogout } from 'react-icons/ci';
 import { GrFormClose } from 'react-icons/gr';
 import { Link } from 'react-router-dom';
-import { useAuthStore } from '../../../store/useAuthStore';
+import { useAuthStore } from '../../../Store/useAuthStore';
 
 const ProfileModal = ({ toggleProfileModal }) => {
   const modalRef = useRef(null);

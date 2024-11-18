@@ -1,12 +1,11 @@
 import React from 'react'
 import { Outlet } from 'react-router';
 import AdminLogin from '../Pages/AdminLogin';
-import { useAdminAuthStore } from '../store/useAdminAuthStore';
+import { useAdminAuthStore } from '../Store/useAdminAuthStore';
 
 const PrivateRoute:React.FC = () => {
-    const { type } = useAdminAuthStore();
-  const isAdmin = type === 'employee';
-  console.log("type", type);
+  const { type } = useAdminAuthStore();
+  const isAdmin = type === 'assistant' || type === 'employee';
   return (
         isAdmin ? <Outlet/> : <AdminLogin/>
   )

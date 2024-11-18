@@ -4,7 +4,7 @@ import axios from 'axios';
 import React from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form';
 import z from 'zod';
-import { useAdminAuthStore } from '../../store/useAdminAuthStore';
+import { useAdminAuthStore } from '../../Store/useAdminAuthStore';
 const Schema = z.object({
     name: z.string(),
 });
@@ -13,13 +13,13 @@ const DashShelfRegistration: React.FC = () => {
     const { register, handleSubmit, formState: {errors} } = useForm<FormFields>({
         resolver: zodResolver(Schema)
     });
-    const { token } = useAdminAuthStore()
+    const { token } = useAdminAuthStore();
     const onSubmit:SubmitHandler<FormFields> = (data) => {
         axios.post('http://localhost:8000/api/dashboard/categories', data, {
-          headers:{
-            Authorization: `Bearer ${token}`
+          headers: {
+              Authorization: `Bearer ${token}`
           }
-        }).then(response => {
+      }).then(response => {
             console.log(response);
         });
     }
@@ -45,7 +45,7 @@ const DashShelfRegistration: React.FC = () => {
           type="submit"
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-20 rounded-md mt-4"
         >
-          ثبت الماری
+          ثبت کتگوری
         </button>
       </div>
     </form>

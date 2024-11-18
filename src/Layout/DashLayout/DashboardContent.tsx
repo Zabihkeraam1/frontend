@@ -14,6 +14,9 @@ import DashDepartment from "../../Components/Dashboard/DashDepartment";
 import DashSectionRegistration from "../../Components/Dashboard/DashSectionRegistration";
 import DashCategoryRegistration from "../../Components/Dashboard/DashCategoryRegistration";
 import UserRegistration from "../../Pages/UserRegistration";
+import DashDeActiveEmp from "../../Components/Dashboard/DashDeactiveEmp";
+import DashActiveEmp from "../../Components/Dashboard/DashActiveEmp";
+import DashEmp from "../../Components/Dashboard/DashEmp";
 
 const DashboardContent:React.FC = () => {
   const location = useLocation();
@@ -41,8 +44,14 @@ const DashboardContent:React.FC = () => {
       {tab === "book-registration" && <DashBookRegistration />}
       {/* Dashboard comp */}
       {tab === "dashboard" && <DashboardComp />}
+      {/* All employee */}
+      {tab === "employees" && <DashEmp />}
       {/* DeActive users */}
       {tab === "deactive-users" && <DashDeActiveUsers />}
+      {/* DeActive employees */}
+      {tab === "deactive-employees" && <DashDeActiveEmp />}
+      {/* Active employees */}
+      {tab === "active-employees" && <DashActiveEmp />}
       {/* Active users */}
       {tab === "active-users" && <DashActiveUsers />}
       {/* Register users */}
