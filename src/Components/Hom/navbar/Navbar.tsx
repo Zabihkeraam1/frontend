@@ -9,10 +9,15 @@ import CollectionModal from './CollectionModal';
 import { HiChevronDown, HiChevronUp } from 'react-icons/hi';
 import CartModal from './CartModal';
 import ProfileModal from './ProfileModal';
-import { useAdminAuthStore } from '../../../Store/useAdminAuthStore';
 import { useAuthStore } from '../../../Store/useAuthStore';
 
-const Navbar = () => {
+interface BottomNavbarProps {
+  showCartModal: boolean;
+  setShowCartModal: React.Dispatch<React.SetStateAction<boolean>>;
+  toggleCartModal: () => void;
+}
+
+const Navbar: React.FC = () => {
   const [showNav, setShowNav] = useState(true);
   const [isSearching, setIsSearching] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
@@ -22,8 +27,8 @@ const Navbar = () => {
   const [showCartModal, setShowCartModal] = useState(false);
   const [profile, setProfile] = useState(false);
 
-  const profileRef = useRef(null);
-  const CartRef = useRef(null);
+  const profileRef = useRef<HTMLDivElement | null>(null);
+  const CartRef = useRef<HTMLDivElement | null>(null);
 
   const { token } = useAuthStore();
 

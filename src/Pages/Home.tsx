@@ -5,6 +5,7 @@ import Navbar from '../Components/Hom/navbar/Navbar';
 import HeroSection from '../Components/Hom/HeroSection';
 import AmountOfThings from '../Components/Hom/AmountOfThings';
 import CategoryAmount from '../Components/Hom/CategoryAmount';
+import { HashLoader } from 'react-spinners';
 
 interface Book {
   id: string;
@@ -22,8 +23,7 @@ interface Category {
 
 const Home: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(true);
- 
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     axios.get('http://localhost:8000/api/home')
@@ -37,22 +37,16 @@ const Home: React.FC = () => {
       });
   }, []);
 
-
-
   return (
     <>
       {loading ? (
         <div className="flex justify-center items-center h-screen">
-          <div className="loader">
-            <div className="spinner-border animate-spin inline-block w-16 h-16 border-4 border-t-4 border-gray-200 rounded-full" role="status">
-              <span className="sr-only">Loading...</span>
-            </div>
-          </div>
+          <HashLoader color="#3498db" size={60} />
         </div>
       ) : (
-        <div className="container mx-auto flex flex-col gap-[80px] w-full bg-orange-50">
+        <div className="container mx-auto flex flex-col gap-10 w-full bg-orange-50 p-6 rounded-lg shadow-lg">
           <div>
-            <Navbar  /> {/* Pass setSearchQuery to Navbar */}
+            <Navbar />
           </div>
           <div className="mt-3">
             <HeroSection />
@@ -60,9 +54,6 @@ const Home: React.FC = () => {
           <div>
             <CategoryAmount />
           </div>
-
-        
-
           {/* Display categories */}
           {categories.map((category) => (
             <Category

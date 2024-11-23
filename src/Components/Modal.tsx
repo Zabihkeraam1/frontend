@@ -1,10 +1,38 @@
 import React from 'react';
 
-const Modal = ({ showModal, setShowModal, bookdetails }) => {
-  if (!showModal) return null;
+interface Category {
+  name: string;
+}
+
+interface BookDetails {
+  image_url: string;
+  title: string;
+  edition: string;
+  author: string;
+  category: Category;
+  format: number;
+  id: number;
+  lang: string;
+  isbn: string;
+  publicationYear: string;
+  publisher: string;
+  translator: string;
+  barrow: boolean;
+  code: string;
+  description: string;
+}
+
+interface ModalProps {
+  showModal: boolean;
+  setShowModal: (showModal: boolean) => void;
+  bookdetails: BookDetails | null;
+}
+
+const Modal: React.FC<ModalProps> = ({ showModal, setShowModal, bookdetails }) => {
+  if (!showModal || !bookdetails) return null;
 
   return (
-    <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center z-30 overflow-y-auto">
+    <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center z-50 overflow-y-auto">
       <div className="bg-white rounded-lg shadow-lg p-4 w-full md:w-[90%] lg:w-3/4 xl:w-2/3 max-h-[85vh] overflow-y-auto">
         {/* تصویر کتاب در بالا و مشخصات کتاب در پایین در صفحات بزرگ‌تر */}
         <div className="flex flex-col lg:flex-row lg:gap-6">
@@ -39,9 +67,7 @@ const Modal = ({ showModal, setShowModal, bookdetails }) => {
               {/* توضیحات کتاب */}
               <div className="mt-4">
                 <h3 className="text-lg font-semibold mb-2">توضیحات:</h3>
-                <p className="text-gray-700">{bookdetails.description}
-
-                </p>
+                <p className="text-gray-700">{bookdetails.description}</p>
               </div>
             </div>
             {/* دکمه بستن */}

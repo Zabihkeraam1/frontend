@@ -5,15 +5,19 @@ import { GrFormClose } from 'react-icons/gr';
 import { Link } from 'react-router-dom';
 import { useAuthStore } from '../../../Store/useAuthStore';
 
-const ProfileModal = ({ toggleProfileModal }) => {
-  const modalRef = useRef(null);
+interface ProfileModalProps {
+  toggleProfileModal: () => void;
+}
 
-  const [userImage,setUserImage] = useState();
+const ProfileModal: React.FC<ProfileModalProps> = ({ toggleProfileModal }) => {
+  const modalRef = useRef<HTMLDivElement | null>(null);
+
+  const [userImage, setUserImage] = useState<string>('');
 
   // بستن مودال هنگام کلیک خارج از محدوده آن
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (modalRef.current && !modalRef.current.contains(event.target)) {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
         toggleProfileModal();
       }
     };
@@ -37,7 +41,6 @@ const ProfileModal = ({ toggleProfileModal }) => {
     ).then((response) => {
       if (response.status === 204) {
         console.log(response);
-        console.log("log  out")
         clearUser();
         console.log("Log out was successful!");
       }
@@ -45,19 +48,21 @@ const ProfileModal = ({ toggleProfileModal }) => {
       console.error("Error logging out:", error);
     });
   };
-  useEffect(()=>{
+
+  useEffect(() => {
     axios.get('http://localhost:8000/api/account/profile',
       {
         headers: {
           Authorization: `Bearer ${token}`
         }
       }
-    ).then((response)=>{
-      console.log(response)
-      setUserImage(response.data.data.image)
-    })
-
-  },[])
+    ).then((response) => {
+      console.log(response);
+      setUserImage(response.data.data.image);
+    }).catch((error) => {
+      console.error("Error fetching user profile:", error);
+    });
+  }, [token]);
 
   return (
     <div
@@ -77,13 +82,12 @@ const ProfileModal = ({ toggleProfileModal }) => {
         className="flex items-center w-full gap-3 pb-4 border-b border-gray-200">
           <div className="h-12 w-12 rounded-full overflow-hidden border border-gray-400 shadow-md">
             <img
-              src={userImage}
+              src={`http://localhost:8000${userImage}`} // URL کامل عکس را ایجاد می‌کند
               alt="User Avatar"
               className="object-cover w-full h-full"
             />
           </div>
           <div
-            
             onClick={toggleProfileModal}
             className="text-gray-800 font-semibold hover:text-indigo-500 transition-all duration-200"
           >

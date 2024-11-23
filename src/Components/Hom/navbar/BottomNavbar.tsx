@@ -5,7 +5,12 @@ import { RiArticleLine } from 'react-icons/ri';
 import { Link } from 'react-router-dom';
 import CartModal from './CartModal';
 
-const BottomNavbar = ({ toggleCartModal, showCartModal }) => {
+interface BottomNavbarProps {
+  toggleCartModal: () => void;
+  showCartModal: boolean;
+}
+
+const BottomNavbar: React.FC<BottomNavbarProps> = ({ toggleCartModal, showCartModal }) => {
   return (
     <>
       <nav className="fixed bottom-0 w-full bg-orange-400 shadow-lg z-50 lg:hidden rounded-t-lg">

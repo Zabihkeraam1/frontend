@@ -44,12 +44,10 @@ interface BookCardProps {
 }
 
 const BookCard: React.FC<BookCardProps> = ({ book }) => {
-  const [showModal, setShowModal] = useState(false);
-  const [bookdetails, setBookdetails] = useState();
-  const { title, image_url, author, publisher, id, translator, year, isbn } = book;
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [bookdetails, setBookdetails] = useState<BookDetails | null>(null);
+  const { title, image_url, author, publisher, id, translator } = book;
   const { token } = useAuthStore();
-
-  
 
   const onAddToCard = () => {
     axios.post(`http://localhost:8000/api/cart/books/${id}`, {}, {
@@ -84,6 +82,8 @@ const BookCard: React.FC<BookCardProps> = ({ book }) => {
   useEffect(() => {
     axios.get(`http://localhost:8000/api/books/details/${id}`).then((response) => {
       setBookdetails(response.data.data);
+    }).catch(error => {
+      console.error("Error fetching book details:", error);
     });
   }, [id]);
 
