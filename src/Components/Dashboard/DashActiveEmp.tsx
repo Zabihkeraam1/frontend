@@ -12,11 +12,11 @@ interface User {
 }
 
 const columns = [
-  { header: "User ID", accessor: "id" },
-  { header: "FirstName", accessor: "firstName" },
-  { header: "LastName", accessor: "lastName" },
-  { header: "Email", accessor: "email" },
-  { header: "Actions", accessor: "actions" },
+  { header: "آی‌دی", accessor: "id" },
+  { header: "نام", accessor: "firstName" },
+  { header: "تخلص", accessor: "lastName" },
+  { header: "ایمیل", accessor: "email" },
+  { header: "عملیات", accessor: "actions" },
 ];
 
 const convertUsersToRecords = (users: User[]): Record<string, ReactNode>[] => {

@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useAdminAuthStore } from "../../Store/useAdminAuthStore";
+import Swal from "sweetalert2";
 
 type FormValues = {
   title: string;
@@ -23,6 +24,7 @@ type FormValues = {
   total: number;
   edition: string;
   code:string;
+  pdf?: File;
 };
 
 interface Department {
@@ -46,10 +48,20 @@ const DashBookRegistration: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [response, setResponse] = useState<string>('');
   const [selectedImage, setSelectedImage] = useState<File | null>(null); 
+  const [selectedFile, setSelectedFile] = useState<File | null>(null); 
   const { token } = useAdminAuthStore();
-  
+  const [isSoft, setIsSoft] = useState(false);
   const { register, handleSubmit, formState: { errors }, reset } = useForm<FormValues>();
-
+  
+  const handleSoft = (e: ChangeEvent<HTMLSelectElement>) =>{
+    console.log("Event: ", e.target.value);
+    if(e.target.value === "pdf" || e.target.value === "both"){
+      setIsSoft(true);
+    }
+    else{
+      setIsSoft(false);
+    }
+  }
   useEffect(() => {
     axios.get("http://localhost:8000/api/dashboard/departments",{
       headers: {
@@ -81,6 +93,11 @@ const DashBookRegistration: React.FC = () => {
       setSelectedImage(e.target.files[0]);
     }
   };
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setSelectedFile(e.target.files[0]);
+    }
+  };
 
   const onSubmit: SubmitHandler<FormValues> = (data) => {
     const formData = new FormData();
@@ -107,7 +124,11 @@ const DashBookRegistration: React.FC = () => {
     if (selectedImage) {
       formData.append("image", selectedImage);
     }
-    console.log(token);
+    if (selectedFile) {
+      formData.append("pdf", selectedFile);
+      console.log(formData.values());
+    }
+    console.log(data);
     axios
       .post("http://localhost:8000/api/dashboard/books", formData, {
         headers: {
@@ -117,8 +138,17 @@ const DashBookRegistration: React.FC = () => {
       })
       .then((response) => {
         setResponse(response.data.message);
+        Swal.fire({
+          title: 'Success!',
+          text: 'Book registered successfully',
+          icon: 'success',
+          confirmButtonText: 'OK'
+        });
+        console.log(response);
+        reset();
+      }).catch((err) => {
+        console.error(err);
       });
-    reset();
   };
 
   return (
@@ -319,7 +349,7 @@ const DashBookRegistration: React.FC = () => {
 
           {/* NEED EDITING */}
           <div className="flex flex-col">
-            <label className="font-semibold">DDS</label>
+            <label className="font-semibold">Code</label>
             <input
               type="text"
               {...register("code", { required: "این فیلد اجباری است" })}
@@ -354,10 +384,10 @@ const DashBookRegistration: React.FC = () => {
             <label className="font-semibold">نوعیت کتاب</label>
             <select
               {...register("format", { required: "این فیلد اجباری است" })}
-              className="input"
+              className="input" onChange={handleSoft}
             >
               <option value="hard">هارد</option>
-              <option value="soft">سافت</option>
+              <option value="pdf">سافت</option>
               <option value="both">هردو</option>
             </select>
             {errors.format && (
@@ -375,6 +405,18 @@ const DashBookRegistration: React.FC = () => {
               </span>
             )}
           </div>
+          {isSoft &&(
+          <div className="flex flex-col">
+            <label className="font-semibold">انتخاب کتاب</label>
+            <input type="file" onChange={handleFileChange} className="input" />
+            {errors.pdf && (
+              <span className="text-red-500 text-sm">
+                {errors.pdf.message}
+              </span>
+            )}
+          </div>
+          )
+          }
 
           <div className="flex flex-col">
             <label className="font-semibold">شرح کتاب</label>

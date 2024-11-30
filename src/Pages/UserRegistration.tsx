@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuthStore } from '../Store/useAuthStore';
+import Swal from 'sweetalert2';
 
 const schema = z.object({
     firstName: z.string().min(1, 'نام الزامی است'),
@@ -39,8 +40,7 @@ const UserRegistration: React.FC = () => {
     const [faculties, setFaculties] = useState<Faculty[]>([]);
     const [selectedFac, setSelectedFac] = useState<Faculty>();
     const [ response, setResponse] = useState<string>();
-  const [selectedImage, setSelectedImage] = useState<File | null>(null); 
-
+    const [selectedImage, setSelectedImage] = useState<File | null>(null); 
     const { register, handleSubmit, formState: { errors }, reset }= useForm<FormFields>({
         resolver: zodResolver(schema)
     });
@@ -50,7 +50,7 @@ const UserRegistration: React.FC = () => {
         if (e.target.files && e.target.files.length > 0) {
           setSelectedImage(e.target.files[0]);
         }
-      };
+    };
 
     // Setting department based on the faculty
     const handleDepartment = (e: ChangeEvent<HTMLSelectElement>) => {
@@ -100,8 +100,12 @@ const UserRegistration: React.FC = () => {
                 const userToken = response.data.token;
                 const isLoggedIn = true;
                 setUser(loggedInUser, userToken, isLoggedIn);
-                console.log("logged in user: ", loggedInUser);
-                console.log("user token: ", userToken);
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'User registered successfully',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                  });
                 navigate('/')
                 setResponse('');
                 reset();
@@ -173,13 +177,13 @@ const UserRegistration: React.FC = () => {
                         {errors.phone && <span className="text-red-500">{errors.phone.message}</span>}
                     </div>
                     <div className="flex flex-col">
-                        <label htmlFor="prevAdd" className="font-semibold">آدرس قبلی</label>
-                        <input {...register('original_residence')} id='prevAdd' type="text" placeholder=' آدرس قبلی شما' className="input"/>
+                        <label htmlFor="prevAdd" className="font-semibold">سکونت قبلی</label>
+                        <input {...register('original_residence')} id='prevAdd' type="text" placeholder='سکونت قبلی' className="input"/>
                         {errors.original_residence && <span className="text-red-500">{errors.original_residence.message}</span>}
                     </div>
                     <div className="flex flex-col">
-                        <label htmlFor="currAdd" className="font-semibold">آدرس فعلی شما</label>
-                        <input {...register('current_residence')} id='currAdd' type='text' placeholder='آدرس فعلی شما' className="input"/>
+                        <label htmlFor="currAdd" className="font-semibold">سکونت فعلی</label>
+                        <input {...register('current_residence')} id='currAdd' type='text' placeholder='سکونت فعلی' className="input"/>
                         {errors.current_residence && <span className="text-red-500">{errors.current_residence.message}</span>}
                     </div>
 
