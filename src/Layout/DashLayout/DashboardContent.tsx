@@ -17,6 +17,7 @@ import UserRegistration from "../../Pages/UserRegistration";
 import DashDeActiveEmp from "../../Components/Dashboard/DashDeactiveEmp";
 import DashActiveEmp from "../../Components/Dashboard/DashActiveEmp";
 import DashEmp from "../../Components/Dashboard/DashEmp";
+import DashReservedBooks from "../../Components/Dashboard/DashReservedBooks";
 
 const DashboardContent:React.FC = () => {
   const location = useLocation();
@@ -34,6 +35,8 @@ const DashboardContent:React.FC = () => {
       {tab === "profile" && <DashProfile />}
       {/* Books */}
       {tab === "books" && <DashBooks />}
+      {/* Reserved Books */}
+      {tab === "reserve-books" && <DashReservedBooks />}
       {/* Users */}
       {tab === "users" && <DashUsers />}
       {/* Monographs */}

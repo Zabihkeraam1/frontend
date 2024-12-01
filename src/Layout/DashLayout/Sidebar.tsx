@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FaBook, FaChevronDown, FaCog, FaFile, FaUsers } from "react-icons/fa";
+import { FaBook, FaChevronDown, FaCog, FaFile, FaRegUser, FaUsers } from "react-icons/fa";
 import { RxDashboard } from "react-icons/rx";
 import unicon from "./image.png";
 import { Link, NavLink, useLocation } from "react-router-dom";
@@ -89,7 +89,13 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
               <Link to="/dashboard?tab=books">
                 <li className={`pr-2 py-2 flex items-center cursor-pointer ${isActive("?tab=books") ? "bg-blue-700 font-bold" : "hover:bg-blue-600"}`}>
                   <span>{<FaBook />}</span>
-                  لیست کتاب‌ها
+                 کتاب‌ها
+                </li>
+              </Link>
+              <Link to="/dashboard?tab=reserve-books">
+                <li className={`pr-2 py-2 flex items-center cursor-pointer ${isActive("?tab=reserve-books") ? "bg-blue-700 font-bold" : "hover:bg-blue-600"}`}>
+                  <span>{<FaRegUser />}</span>
+                 کتابهای رزرو شده
                 </li>
               </Link>
               <Link to="/dashboard?tab=book-registration">

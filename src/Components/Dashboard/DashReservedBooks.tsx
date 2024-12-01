@@ -28,7 +28,7 @@ const convertBooksToRecords = (books: Book[]): Record<string, ReactNode>[] => {
   }));
 };
 
-const DashBooks: React.FC = () => {
+const DashReservedBooks: React.FC = () => {
   const [books, setBooks] = useState<Book[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const { token } = useAdminAuthStore();
@@ -52,7 +52,7 @@ const DashBooks: React.FC = () => {
   return (
     <div className="px-2 min-h-screen ">
       <header className="flex justify-between mt-4 mb-2 relative">
-        <h1 className="text-3xl font-bold">لیست کتابها</h1>
+        <h1 className="text-3xl font-bold">کتابهای رزرو شده</h1>
         <div>
           <input
             type="text"
@@ -69,4 +69,4 @@ const DashBooks: React.FC = () => {
   );
 };
 
-export default DashBooks;
+export default DashReservedBooks;
