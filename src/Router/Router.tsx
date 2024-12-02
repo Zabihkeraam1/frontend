@@ -9,7 +9,7 @@ import Dashboard from "../Pages/Dashboard";
 import UserProfile from "../Components/Hom/profile/studentProf/UserProfile";
 import EditForm from "../Components/Hom/profile/studentProf/EditFormProf";
 import ReservedBooks from "../Components/Hom/profile/studentProf/ReservedBooks";
-import PDFViewer from "../Components/pdf/PDFViewer";
+
 import Contact from "../Components/Hom/contactUs/ContactUs";
 import AboutUs from "../Components/Hom/aboutUs/AboutUs";
 import UserRegistration from "../Pages/UserRegistration";
@@ -22,6 +22,9 @@ export const Router = createBrowserRouter([
             {
                 path: '/',
                 element: <Home/>,
+                children: [
+                    
+                ]
             },
             {
                 path: 'contact',
@@ -40,10 +43,10 @@ export const Router = createBrowserRouter([
                         index: true,
                         element: <Navigate to="reserved-books" replace />
                     },
-                    {
-                        path: 'edit-profile',
-                        element: <EditForm/>
-                    },
+                    // {
+                    //     path: 'edit-profile',
+                    //     element: <EditForm/>
+                    // },
                     {
                         path: 'reserved-books',
                         element: <ReservedBooks/>
@@ -78,9 +81,6 @@ export const Router = createBrowserRouter([
         path: '/register',
         element: <UserRegisteration/>
     },
-    {
-        path: '/pdf',
-        element: <PDFViewer fileUrl={"public/2.pdf"} />
-    }
+    
 ]);
 

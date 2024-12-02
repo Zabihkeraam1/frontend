@@ -29,36 +29,32 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ toggleProfileModal }) => {
 
   const { token, clearUser } = useAuthStore();
 
-  const handleSignout = () => {
-    axios.post(
-      'http://localhost:8000/api/logout',
-      {},
-      {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
+  const handleSignout = () =>{
+    console.log('token',token);
+    axios.post("http://localhost:8000/api/logout",{}, {
+      headers: {
+        Authorization: `Bearer ${token}`
       }
-    ).then((response) => {
-      if (response.status === 204) {
-        console.log(response);
+    }).then((response)=>{
+      if(response.data.message === "Logged out successfully"){
         clearUser();
-        console.log("Log out was successful!");
       }
-    }).catch((error) => {
-      console.error("Error logging out:", error);
-    });
-  };
+    })
+  }
+  
 
   useEffect(() => {
+    console.log('token',token)
     axios.get('http://localhost:8000/api/account/profile',
+      
       {
         headers: {
           Authorization: `Bearer ${token}`
         }
       }
     ).then((response) => {
-      console.log(response);
-      setUserImage(response.data.data.image);
+      console.log('userProfile',response.data.user);
+      // setUserImage(response.data.data.image);
     }).catch((error) => {
       console.error("Error fetching user profile:", error);
     });
@@ -72,17 +68,17 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ toggleProfileModal }) => {
       {/* دکمه بستن مودال */}
       <button
         onClick={toggleProfileModal}
-        className="absolute top-2 right-2 p-1.5 bg-red-600 text-white rounded-full shadow-lg hover:bg-red-700 transition-all duration-300 transform hover:scale-110"
+        className="absolute top-2 right-2 p-1.5 text-red-500 rounded-full hover:text-red-700 transition-all duration-300 transform hover:scale-110"
       >
-        <GrFormClose size={16} />
+        <GrFormClose size={22} />
       </button>
 
       <div className="flex flex-col items-center mt-4">
         <Link to={'profile/reserved-books'}
         className="flex items-center w-full gap-3 pb-4 border-b border-gray-200">
-          <div className="h-12 w-12 rounded-full overflow-hidden border border-gray-400 shadow-md">
+          <div className="h-10 w-10 rounded-full overflow-hidden border border-gray-400 shadow-md">
             <img
-              src={`http://localhost:8000${userImage}`} // URL کامل عکس را ایجاد می‌کند
+              src={userImage} // URL کامل عکس را ایجاد می‌کند
               alt="User Avatar"
               className="object-cover w-full h-full"
             />
@@ -103,7 +99,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ toggleProfileModal }) => {
         </Link>
         <button
           onClick={() => {
-            toggleProfileModal();
+            // toggleProfileModal();
             handleSignout();
           }}
           className="flex items-center text-red-500 hover:text-red-600 mt-6 transition-colors duration-200"

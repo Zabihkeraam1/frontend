@@ -22,21 +22,21 @@ const BurgarModal = ({ setShowMenuModal, showMenuModal, toggleMenuModal }) => {
         {/* منو لینک‌ها با آیکون‌ها */}
         <nav className="space-y-6 mt-10 text-right font-medium">
           <Link
-            to="/books"
+            to=""
             className="flex items-center gap-3 text-gray-800 hover:text-orange-500 transition-colors duration-200"
           >
             <FaBook size={20} className="text-orange-500" />
             کتاب‌ها
           </Link>
           <Link
-            to="/articles"
+            to=""
             className="flex items-center gap-3 text-gray-800 hover:text-orange-500 transition-colors duration-200"
           >
             <RiArticleLine size={20} className="text-blue-500" />
             مقالات
           </Link>
           <Link
-            to="/about"
+            to="/about-us"
             className="flex items-center gap-3 text-gray-800 hover:text-orange-500 transition-colors duration-200"
           >
             <FaUserCircle size={20} className="text-green-500" />
@@ -50,7 +50,7 @@ const BurgarModal = ({ setShowMenuModal, showMenuModal, toggleMenuModal }) => {
             تماس با ما
           </Link>
           <Link
-            to="/collection"
+            to=""
             className="flex items-center gap-3 text-gray-800 hover:text-orange-500 transition-colors duration-200"
           >
             <HiOutlineShoppingCart size={20} className="text-red-500" />

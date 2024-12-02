@@ -8,9 +8,9 @@ const HeroSection = () => {
   const [isAnimating, setIsAnimating] = useState(false);
 
   const slides = [
-    { id: 1, text: ' کتاب‌هایی که باید پیش از ترک بخوانیم! ', bgColor: 'bg-red-600', image: 'public/images/1.jpg' },
+    { id: 1, text: ' کتاب‌هایی که باید پیش از ترک بخوانیم! ', bgColor: 'bg-red-600', image: 'public/images/2.jpg' },
     { id: 2, text: ' 50% تخفیف روی کتاب‌های صوتی!', bgColor: 'bg-blue-600', image: 'public/images/2.jpg' },
-    { id: 3, text: ' دوره‌های رایگان برای دانشجویان!', bgColor: 'bg-green-600', image: 'public/images/5.jpg' },
+    { id: 3, text: ' دوره‌های رایگان برای دانشجویان!', bgColor: 'bg-green-600', image: 'public/images/2.jpg' },
   ];
 
   const intervalRef = useRef<number | null>(null);

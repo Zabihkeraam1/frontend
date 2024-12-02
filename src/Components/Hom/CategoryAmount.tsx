@@ -1,96 +1,88 @@
-import axios from 'axios';
-import React, { useEffect } from 'react';
-import { FaLaptop, FaMountain, FaBuilding, FaCogs, FaWater, FaRoad, FaDraftingCompass, FaIndustry, FaQuran, FaCalculator } from 'react-icons/fa';
+import { motion } from 'framer-motion';
+import {
+  FaLaptop,
+  FaMountain,
+  FaBuilding,
+  FaCogs,
+  FaWater,
+  FaRoad,
+  FaDraftingCompass,
+  FaIndustry,
+  FaQuran,
+  FaCalculator,
+} from 'react-icons/fa';
 
 const CategoryAmount = () => {
-  useEffect(() => {
-    axios.get('http://localhost:8000/api/home')
-      .then((res) => {
-        // Data fetching logic
-      });
-  }, []);
+  const cards = [
+    { id: 1, icon: FaLaptop, color: 'text-orange-500', title: 'کامپیوتر', amount: '1345' },
+    { id: 2, icon: FaMountain, color: 'text-green-500', title: 'جیولوجی و معادن', amount: '1345' },
+    { id: 3, icon: FaBuilding, color: 'text-blue-500', title: 'ساختمانی', amount: '1345' },
+    { id: 4, icon: FaCogs, color: 'text-purple-500', title: 'الکترومیخانیک', amount: '1345' },
+    { id: 5, icon: FaWater, color: 'text-red-500', title: 'آب و محیط زیست', amount: '1345' },
+    { id: 6, icon: FaRoad, color: 'text-yellow-500', title: 'ساختمان های ترانسپورتی', amount: '1345' },
+    { id: 7, icon: FaDraftingCompass, color: 'text-teal-500', title: 'جیوماتیک', amount: '1345' },
+    { id: 8, icon: FaIndustry, color: 'text-pink-500', title: 'صنایع کیمیاوی', amount: '1345' },
+    { id: 9, icon: FaQuran, color: 'text-indigo-500', title: 'ثقافت اسلامی', amount: '1345' },
+    { id: 10, icon: FaCalculator, color: 'text-lime-500', title: 'ریاضی و هندسه ترسیمی', amount: '1345' },
+  ];
+
+  const container = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2, // فاصله زمانی بین کارت‌ها
+      },
+    },
+  };
+
+  const cardAnimation = {
+    hidden: (index) => ({
+      x: index % 2 === 0 ? '-100vw' : '100vw', // کارت‌های زوج از چپ و فرد از راست
+      opacity: 0,
+    }),
+    visible: {
+      x: 0,
+      opacity: 1,
+      transition: {
+        duration: 1.2, // مدت زمان بیشتر برای ورود آرام
+        ease: 'easeOut', // پایان روان
+      },
+    },
+  };
+  
 
   return (
-    <div className='flex flex-col justify-center items-center sm:px-6 xl:px-28 lg:px-16 md:px-10 mt-10 overflow-x-auto'>
-      <span className='font-sans mb-4 text-2xl font-semibold text-gray-800'>کتگوری ها</span>
+    <motion.div
+      className="flex flex-col justify-center items-center sm:px-6 xl:px-28 lg:px-16 md:px-10 mt-10 overflow-x-auto"
+      variants={container}
+      initial="hidden"
+      animate="visible"
+    >
+      <span className="font-sans mb-4 text-2xl font-semibold text-gray-800">کتگوری ها</span>
 
-      {/* Grid Container */}
-      <div className='w-full py-6 px-4 mb-6 rounded-3xl bg-orange-100 shadow-lg'>
-        <div className='grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4'>
-          
-          {/* Column 1: Computer Books */}
-          <div className='flex flex-col justify-center items-center p-3 rounded-xl bg-white shadow-lg transition-transform transform hover:scale-105'>
-            <FaLaptop className='text-2xl text-orange-500 mb-2 hidden sm:flex'/>
-            <p className='font-semibold text-gray-700 text-base sm:text-lg'>کامپیوتر</p>
-            <span className='font-bold text-orange-500 text-sm sm:text-md'>1345</span>
-          </div>
-
-          {/* Column 2: Geology */}
-          <div className='flex flex-col justify-center items-center p-3 rounded-xl bg-white shadow-lg transition-transform transform hover:scale-105'>
-            <FaMountain className='text-2xl text-green-500 mb-2 hidden sm:flex'/>
-            <p className='font-semibold text-gray-700 text-base sm:text-lg'>جیولوجی و معادن</p>
-            <span className='font-bold text-green-500 text-sm sm:text-md'>1345</span>
-          </div>
-
-          {/* Column 3: Construction */}
-          <div className='flex flex-col justify-center items-center p-3 rounded-xl bg-white shadow-lg transition-transform transform hover:scale-105'>
-            <FaBuilding className='text-2xl text-blue-500 mb-2 hidden sm:flex'/>
-            <p className='font-semibold text-gray-700 text-base sm:text-lg'>ساختمانی</p>
-            <span className='font-bold text-blue-500 text-sm sm:text-md'>1345</span>
-          </div>
-
-          {/* Column 4: Electromechanics */}
-          <div className='flex flex-col justify-center items-center p-3 rounded-xl bg-white shadow-lg transition-transform transform hover:scale-105'>
-            <FaCogs className='text-2xl text-purple-500 mb-2 hidden sm:flex'/>
-            <p className='font-semibold text-gray-700 text-base sm:text-lg'>الکترومیخانیک</p>
-            <span className='font-bold text-purple-500 text-sm sm:text-md'>1345</span>
-          </div>
-
-          {/* Column 5: Environment */}
-          <div className='flex flex-col justify-center items-center p-3 rounded-xl bg-white shadow-lg transition-transform transform hover:scale-105'>
-            <FaWater className='text-2xl text-red-500 mb-2 hidden sm:flex'/>
-            <p className='font-semibold text-gray-700 text-base sm:text-lg'>آب و محیط زیست</p>
-            <span className='font-bold text-red-500 text-sm sm:text-md'>1345</span>
-          </div>
-
-          {/* Column 6: Transportation */}
-          <div className='flex flex-col justify-center items-center p-3 rounded-xl bg-white shadow-lg transition-transform transform hover:scale-105'>
-            <FaRoad className='text-2xl text-yellow-500 mb-2 hidden sm:flex'/>
-            <p className='font-semibold text-gray-700 text-base sm:text-lg'>ساختمان های ترانسپورتی</p>
-            <span className='font-bold text-yellow-500 text-sm sm:text-md'>1345</span>
-          </div>
-
-          {/* Column 7: Geomatics */}
-          <div className='flex flex-col justify-center items-center p-3 rounded-xl bg-white shadow-lg transition-transform transform hover:scale-105'>
-            <FaDraftingCompass className='text-2xl text-teal-500 mb-2 hidden sm:flex'/>
-            <p className='font-semibold text-gray-700 text-base sm:text-lg'>جیوماتیک</p>
-            <span className='font-bold text-teal-500 text-sm sm:text-md'>1345</span>
-          </div>
-
-          {/* Column 8: Chemical Industry */}
-          <div className='flex flex-col justify-center items-center p-3 rounded-xl bg-white shadow-lg transition-transform transform hover:scale-105'>
-            <FaIndustry className='text-2xl text-pink-500 mb-2 hidden sm:flex'/>
-            <p className='font-semibold text-gray-700 text-base sm:text-lg'>صنایع کیمیاوی</p>
-            <span className='font-bold text-pink-500 text-sm sm:text-md'>1345</span>
-          </div>
-
-          {/* Column 9: Islamic Culture */}
-          <div className='flex flex-col justify-center items-center p-3 rounded-xl bg-white shadow-lg transition-transform transform hover:scale-105'>
-            <FaQuran className='text-2xl text-indigo-500 mb-2 hidden sm:flex'/>
-            <p className='font-semibold text-gray-700 text-base sm:text-lg'>ثقافت اسلامی</p>
-            <span className='font-bold text-indigo-500 text-sm sm:text-md'>1345</span>
-          </div>
-
-          {/* Column 10: Mathematics */}
-          <div className='flex flex-col justify-center items-center p-3 rounded-xl bg-white shadow-lg transition-transform transform hover:scale-105'>
-            <FaCalculator className='text-2xl text-lime-500 mb-2 hidden sm:flex'/>
-            <p className='font-semibold text-gray-700 text-base sm:text-lg'>ریاضی و هندسه ترسیمی</p>
-            <span className='font-bold text-lime-500 text-sm sm:text-md'>1345</span>
-          </div>
-          
+      <div className="w-full py-6 px-4 mb-6 rounded-3xl bg-orange-100 shadow-lg">
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+          {cards.map((card, index) => {
+            const Icon = card.icon;
+            return (
+              <motion.div
+                key={card.id}
+                className="flex flex-col justify-center items-center p-3 rounded-xl bg-white shadow-lg transition-transform transform hover:scale-105"
+                custom={index}
+                initial="hidden"
+                animate="visible"
+                variants={cardAnimation}
+              >
+                <Icon className={`text-2xl ${card.color} mb-2 hidden sm:flex`} />
+                <p className="font-semibold text-gray-700 text-base sm:text-lg">{card.title}</p>
+                <span className={`font-bold ${card.color} text-sm sm:text-md`}>{card.amount}</span>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

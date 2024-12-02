@@ -5,14 +5,11 @@ const AboutUs: React.FC = () => {
     <div className="flex flex-col items-center bg-gray-100">
       {/* Hero Image */}
       <div
-        className="w-full h-screen bg-cover bg-center"
-        style={{
-          backgroundImage: "url('https://source.unsplash.com/1600x900/?library,books')", // Replace with your library image URL
-        }}
+        className="w-full h-screen "
+       
       >
-        <div className="flex items-center justify-center w-full h-full bg-black bg-opacity-50">
-          <h1 className="text-white text-4xl md:text-6xl font-bold text-center">درباره ما</h1>
-        </div>
+        <img src="public/images/2.jpg" alt="" className='object-cover w-full h-[27rem] mt-16' />
+        
       </div>
 
       {/* Description Section */}

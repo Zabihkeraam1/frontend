@@ -16,14 +16,14 @@ const BottomNavbar: React.FC<BottomNavbarProps> = ({ toggleCartModal, showCartMo
       <nav className="fixed bottom-0 w-full bg-orange-400 shadow-lg z-50 lg:hidden rounded-t-lg">
         <div className="flex justify-around items-center py-3">
           <Link
-            to="/books"
+            to="/"
             className="text-white flex flex-col items-center hover:text-yellow-100 transition-transform transform hover:scale-110"
           >
             <FaBook size={24} />
             <span className="text-xs mt-1">کتاب‌ها</span>
           </Link>
           <Link
-            to="/articles"
+            to=""
             className="text-white flex flex-col items-center hover:text-yellow-100 transition-transform transform hover:scale-110"
           >
             <RiArticleLine size={24} />
@@ -40,7 +40,7 @@ const BottomNavbar: React.FC<BottomNavbarProps> = ({ toggleCartModal, showCartMo
             </span>
           </button>
           <Link
-            to="/about"
+            to="/about-us"
             className="text-white flex flex-col items-center hover:text-yellow-100 transition-transform transform hover:scale-110"
           >
             <FaUser size={24} />

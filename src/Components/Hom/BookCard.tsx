@@ -3,6 +3,7 @@ import React, { ReactNode, useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import Modal from '../Modal';
 import { useAuthStore } from '../../Store/useAuthStore';
+import PDFViewer from '../pdf/PDFViewer';
 
 interface Book {
   translator: ReactNode;
@@ -46,7 +47,12 @@ interface BookCardProps {
 const BookCard: React.FC<BookCardProps> = ({ book }) => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [bookdetails, setBookdetails] = useState<BookDetails | null>(null);
+  const [isPdfModalOpen,setIsPdfModalOpen]=useState(false)
   const { title, image_url, author, publisher, id, translator } = book;
+  console.log('book',book)
+
+  const fileUrl='pdf/2.pdf'
+ 
   const { token } = useAuthStore();
 
   const onAddToCard = () => {
@@ -82,6 +88,7 @@ const BookCard: React.FC<BookCardProps> = ({ book }) => {
   useEffect(() => {
     axios.get(`http://localhost:8000/api/books/details/${id}`).then((response) => {
       setBookdetails(response.data.data);
+      console.log('cart detail',response.data.data.format)
     }).catch(error => {
       console.error("Error fetching book details:", error);
     });
@@ -106,7 +113,7 @@ const BookCard: React.FC<BookCardProps> = ({ book }) => {
             <p className="text-gray-600 mb-1">توسط {book.author}</p>
             <div className='flex justify-center items-center w-full gap-2'>
               <button onClick={onAddToCard}
-                className="mt-2 bg-blue-500 hover:bg-blue-600 text-white py-1 px-4 rounded-md transition duration-300">
+                className="mt-2 text-white bg-blue-500 rounded-md ver:bg-blue-600  py-1 px-4  transition duration-300">
                 رزرو
               </button>
               <button 
@@ -119,23 +126,33 @@ const BookCard: React.FC<BookCardProps> = ({ book }) => {
             <p className="text-gray-600 mb-1">نویسنده: {author}</p>
             <p className="text-gray-600 mb-1">مترجم: {translator}</p>
             <p className="text-gray-500 mb-1">ناشر: {publisher}</p>
+            <button 
+            onClick={()=>setIsPdfModalOpen(true)}>PDF</button>
             <div className="flex gap-2">
               <button 
                 onClick={onAddToCard}
-                className="mt-2 bg-blue-500 hover:bg-blue-600 text-white py-1 px-4 rounded-md transition duration-300"
+                className="mt-2 border border-blue-400 hover:bg-blue-600 hover:text-white  py-1 px-4 rounded-md transition duration-500 delay-100"
               >
                 رزرو
               </button>
-              <button 
+              <button
                 onClick={() => setShowModal(true)}
-                className="mt-2 bg-gray-500 hover:bg-gray-600 text-white py-1 px-4 rounded-md transition duration-300"
+                className="mt-2 border border-gray-500 text-gray-700 py-1 px-4 rounded-md 
+                          transition duration-500 delay-100
+                          hover:bg-gray-600 hover:text-white"
               >
-                جزئیات 
+                جزئیات
               </button>
+
             </div>
           </div>
         </div>
       </div>
+      {
+          isPdfModalOpen &&(
+      <PDFViewer fileUrl={fileUrl}
+      onClose={() => setIsPdfModalOpen(false)} />)
+      }
       <Modal showModal={showModal} setShowModal={setShowModal} bookdetails={bookdetails} />
     </>
   );

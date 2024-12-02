@@ -2,6 +2,7 @@ import { Outlet, useLocation } from "react-router";
 // import Navbar from "../Components/Hom/Navbar";
 import Footer from "../Components/Footer";
 import { useEffect, useState } from "react";
+import Navbar from "../Components/Hom/navbar/Navbar";
 // import DashNavbar from "../Components/Dashboard/DashNavbar";
 
 export default function Layout() {
@@ -26,7 +27,7 @@ export default function Layout() {
           </div>
         ) : (
           <div >
-            
+            <Navbar/>
             <Outlet />
             <Footer />
           </div>

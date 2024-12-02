@@ -124,10 +124,10 @@ const CartModal: React.FC<CartModalProps> = ({ toggleCartModal }) => {
         {/* Close Modal Button */}
         <button
           onClick={toggleCartModal}
-          className="absolute top-3 right-3 bg-red-600 text-white p-2 rounded-full shadow-lg hover:bg-red-700 transition-all duration-300 transform hover:scale-125"
+          className="absolute top-3 right-3 text-red-600  p-2 rounded-full  hover:text-red-700 transition-all duration-300 transform hover:scale-125"
           aria-label="Close Modal"
         >
-          <GrFormClose size={20} />
+          <GrFormClose size={24} />
         </button>
 
         <div className="w-full lg:px-6 px-4 pt-6">
@@ -162,12 +162,12 @@ const CartModal: React.FC<CartModalProps> = ({ toggleCartModal }) => {
                         <div className="flex justify-between items-center mt-4">
                           <button
                             onClick={() => handleDetails(book.id)}
-                            className="w-10 h-10 p-2 flex justify-center items-center border border-gray-300 rounded-lg hover:bg-blue-500 hover:text-white transition-transform duration-300 transform hover:scale-110"
+                            className="w-10 h-10 p-2 flex justify-center items-center border border-blue-400 rounded-lg hover:bg-blue-500 hover:text-white transition-transform duration-300 transform hover:scale-110 delay-100"
                           >
                             <TiEyeOutline className="text-lg" />
                           </button>
                           <button onClick={() => onReserve(book.id)}
-                           className="border border-gray-300 rounded-lg px-4 py-2 bg-blue-500 text-white hover:bg-blue-600 transition-transform duration-300 transform hover:scale-110">
+                          className="border border-gray-300 rounded-lg px-4 py-2 bg-blue-500 text-white hover:bg-blue-600 transition-transform duration-300 transform hover:scale-110">
                             رزرو
                           </button>
                         </div>

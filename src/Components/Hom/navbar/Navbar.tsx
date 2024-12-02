@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { FaSearch, FaUser, FaBars } from 'react-icons/fa';
 import { RiShoppingBag4Line } from 'react-icons/ri';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 import BurgarModal from './BurgarModal';
 import SearchModal from './SearchModal';
 import BottomNavbar from './BottomNavbar';
@@ -11,13 +12,7 @@ import CartModal from './CartModal';
 import ProfileModal from './ProfileModal';
 import { useAuthStore } from '../../../Store/useAuthStore';
 
-interface BottomNavbarProps {
-  showCartModal: boolean;
-  setShowCartModal: React.Dispatch<React.SetStateAction<boolean>>;
-  toggleCartModal: () => void;
-}
-
-const Navbar: React.FC = () => {
+const Navbar: React.FC = ({searchData , setSearchData}) => {
   const [showNav, setShowNav] = useState(true);
   const [isSearching, setIsSearching] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
@@ -26,6 +21,8 @@ const Navbar: React.FC = () => {
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [showCartModal, setShowCartModal] = useState(false);
   const [profile, setProfile] = useState(false);
+  const [cartBooks, setCartBooks] = useState([]); // برای ذخیره لیست کتاب‌ها
+  const [loading, setLoading] = useState(true); // برای مدیریت وضعیت بارگذاری
 
   const profileRef = useRef<HTMLDivElement | null>(null);
   const CartRef = useRef<HTMLDivElement | null>(null);
@@ -76,17 +73,35 @@ const Navbar: React.FC = () => {
     };
   }, [lastScrollY]);
 
+  // درخواست برای دریافت کتاب‌های موجود در سبد خرید
+  useEffect(() => {
+    axios
+      .get('http://localhost:8000/api/cart/books', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        setCartBooks(response.data.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error('Error fetching cart books:', error);
+        setLoading(false);
+      });
+  }, [token]);
+
   return (
     <>
-      <nav className={`fixed top-0 w-full bg-white shadow-lg z-50 transition-transform duration-300 ${showNav ? 'translate-y-0' : '-translate-y-full'}`}>
+      <nav className={`fixed top-0 w-full bg-white shadow-lg z-50 transition-transform  duration-300 ${showNav ? 'translate-y-0' : '-translate-y-full'}`}>
         <div className="container mx-auto px-4 py-3 flex justify-between items-center">
           <div className="h-11 w-11">
-            <img src="image.png" alt="logo" className="object-cover" />
+            <img src="../../Layout/DashLayout/image.png" alt="logo" className="object-cover" />
           </div>
 
           <div className="lg:flex hidden space-x-6 gap-2 font-sans">
             <a href="/" className="nav-link text-gray-800 hover:text-indigo-600 ml-2">کتاب‌ها</a>
-            <a href="/articles" className="nav-link text-gray-800 hover:text-indigo-600">مقالات</a>
+            <a href="" className="nav-link text-gray-800 hover:text-indigo-600">مقالات</a>
             <a href="/about-us" className="nav-link text-gray-800 hover:text-indigo-600">درباره ما</a>
             <a href="/contact" className="nav-link text-gray-800 hover:text-indigo-600">تماس با ما</a>
             <a href="/contact" className="nav-link text-gray-800 hover:text-indigo-600 flex justify-center items-center"
@@ -104,7 +119,9 @@ const Navbar: React.FC = () => {
                  onClick={toggleCartModal}>
               <RiShoppingBag4Line size={25} className="text-gray-700" />
               <div className="absolute -top-2 -right-2 bg-red-500 rounded-full h-[19px] w-[19px] flex justify-center items-center">
-                <span className="text-white text-xs font-bold">07</span>
+                <span className="text-white text-xs font-bold">
+                  {loading ? '...' : cartBooks.length > 0 ? cartBooks.length : '0'}
+                </span>
               </div>
             </div>
 
@@ -135,7 +152,7 @@ const Navbar: React.FC = () => {
       {showCartModal && <CartModal toggleCartModal={toggleCartModal} />}
       {showMenuModal && <BurgarModal showMenuModal={showMenuModal} setShowMenuModal={setShowMenuModal} toggleMenuModal={toggleMenuModal} />}
       {showCollectionModal && <CollectionModal />}
-      {isSearching && <SearchModal closeSearchModal={closeSearchModal} profile={profile} toggleProfileModal={toggleProfileModal} />}
+      {isSearching && <SearchModal closeSearchModal={closeSearchModal} profile={profile} toggleProfileModal={toggleProfileModal} searchData={searchData} setSearchData={setSearchData}/>}
       <BottomNavbar showCartModal={showCartModal} setShowCartModal={setShowCartModal} toggleCartModal={toggleCartModal} />
     </>
   );

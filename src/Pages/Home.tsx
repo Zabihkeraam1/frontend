@@ -24,6 +24,7 @@ interface Category {
 const Home: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [searchData , setSearchData] = useState()
 
   useEffect(() => {
     axios.get('http://localhost:8000/api/home')
@@ -36,6 +37,7 @@ const Home: React.FC = () => {
         setLoading(false);
       });
   }, []);
+  console.log(searchData)
 
   return (
     <>
@@ -44,9 +46,9 @@ const Home: React.FC = () => {
           <HashLoader color="#3498db" size={60} />
         </div>
       ) : (
-        <div className="container mx-auto flex flex-col gap-10 w-full bg-orange-50 p-6 rounded-lg shadow-lg">
+        <div className="container mx-auto flex flex-col gap-10 w-full bg-orange-50 rounded-lg shadow-lg">
           <div>
-            <Navbar />
+            <Navbar searchData={searchData} setSearchData={searchData}/>
           </div>
           <div className="mt-3">
             <HeroSection />
