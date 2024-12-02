@@ -152,7 +152,7 @@ const Navbar: React.FC = ({searchData , setSearchData}) => {
       {showCartModal && <CartModal toggleCartModal={toggleCartModal} />}
       {showMenuModal && <BurgarModal showMenuModal={showMenuModal} setShowMenuModal={setShowMenuModal} toggleMenuModal={toggleMenuModal} />}
       {showCollectionModal && <CollectionModal />}
-      {isSearching && <SearchModal closeSearchModal={closeSearchModal} profile={profile} toggleProfileModal={toggleProfileModal} searchData={searchData} setSearchData={setSearchData}/>}
+      {isSearching && <SearchModal closeSearchModal={closeSearchModal} profile={profile} toggleProfileModal={toggleProfileModal} />}
       <BottomNavbar showCartModal={showCartModal} setShowCartModal={setShowCartModal} toggleCartModal={toggleCartModal} />
     </>
   );

@@ -4,6 +4,7 @@ import { FaUser } from 'react-icons/fa';
 import { RiShoppingBag4Line } from 'react-icons/ri';
 import { Link } from 'react-router-dom';
 import { useForm, SubmitHandler } from 'react-hook-form';
+import { useSearchStore } from '../../../Store/searchStore';
 
 interface SearchModalProps {
   closeSearchModal: () => void;
@@ -22,17 +23,18 @@ const SearchModal = ({
   profile,
   toggleProfileModal,
   searchData,
-  setSearchData,
+  
 }: SearchModalProps) => {
   const profileRef = useRef(null);
 
-  // استفاده از useForm برای مدیریت فرم
-  const { register, handleSubmit, reset } = useForm<SearchFormData>();
 
-  // این تابع برای ذخیره کردن مقدار ورودی جستجو در استیت استفاده می‌شود
+  const { register, handleSubmit, reset } = useForm<SearchFormData>();
+  const setSearchQuery = useSearchStore((state) => state.setSearchQuery);
+
   const onSubmit: SubmitHandler<SearchFormData> = (data) => {
-    setSearchData(data.searchQuery);  // ذخیره مقدار ورودی در استیت
-    reset(); // برای پاک‌کردن فرم بعد از ارسال
+    setSearchQuery(data.searchQuery);
+    reset(); 
+    closeSearchModal()
   };
 
   return (

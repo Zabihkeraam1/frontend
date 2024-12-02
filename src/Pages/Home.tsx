@@ -6,6 +6,8 @@ import HeroSection from '../Components/Hom/HeroSection';
 import AmountOfThings from '../Components/Hom/AmountOfThings';
 import CategoryAmount from '../Components/Hom/CategoryAmount';
 import { HashLoader } from 'react-spinners';
+import { useSearchStore } from '../Store/searchStore';
+import { div } from 'framer-motion/client';
 
 interface Book {
   id: string;
@@ -24,7 +26,10 @@ interface Category {
 const Home: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [searchData , setSearchData] = useState()
+ 
+
+  const searchQuery = useSearchStore((state) => state.searchQuery);
+  console.log(searchQuery)
 
   useEffect(() => {
     axios.get('http://localhost:8000/api/home')
@@ -37,7 +42,13 @@ const Home: React.FC = () => {
         setLoading(false);
       });
   }, []);
-  console.log(searchData)
+
+  const filteredCategories = categories.filter((category) =>
+    category.books.some((book) =>
+      book.title.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+  );
+  
 
   return (
     <>
@@ -48,14 +59,37 @@ const Home: React.FC = () => {
       ) : (
         <div className="container mx-auto flex flex-col gap-10 w-full bg-orange-50 rounded-lg shadow-lg">
           <div>
-            <Navbar searchData={searchData} setSearchData={searchData}/>
+            <Navbar />
           </div>
           <div className="mt-3">
             <HeroSection />
           </div>
+          {searchQuery && (
+            <div>
+              {filteredCategories.map((category) => (
+                <div key={category.id} className='flex flex-col justify-center items-center w-full'>
+                  <p className='font-bold text-2xl'>Search Result</p>
+                  
+                  {category.books
+                    .filter((book) =>
+                      book.title.toLowerCase().includes(searchQuery.toLowerCase())
+                    )
+                    .map((book) => (
+                      
+                      <Category
+                        key={category.id}
+                        categoryId={category.id}
+                        categoryName={category.name}
+                      />
+                    ))}
+                </div>
+              ))}
+            </div>
+          )}
           <div>
             <CategoryAmount />
           </div>
+
           {/* Display categories */}
           {categories.map((category) => (
             <Category
