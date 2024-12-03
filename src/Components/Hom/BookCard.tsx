@@ -4,6 +4,7 @@ import Swal from 'sweetalert2';
 import Modal from '../Modal';
 import { useAuthStore } from '../../Store/useAuthStore';
 import PDFViewer from '../pdf/PDFViewer';
+import { useCartStore } from '../../Store/cartStore';
 
 interface Book {
   translator: ReactNode;
@@ -54,6 +55,7 @@ const BookCard: React.FC<BookCardProps> = ({ book }) => {
   const fileUrl='pdf/2.pdf'
  
   const { token } = useAuthStore();
+  const { incrementCartCount} = useCartStore();
 
   const onAddToCard = () => {
     axios.post(`http://localhost:8000/api/cart/books/${id}`, {}, {
@@ -71,6 +73,7 @@ const BookCard: React.FC<BookCardProps> = ({ book }) => {
         backdrop: true,
         width: '300px',
       });
+      incrementCartCount()
     })
     .catch((error) => {
       Swal.fire({

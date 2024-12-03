@@ -11,6 +11,7 @@ import { HiChevronDown, HiChevronUp } from 'react-icons/hi';
 import CartModal from './CartModal';
 import ProfileModal from './ProfileModal';
 import { useAuthStore } from '../../../Store/useAuthStore';
+import { useCartStore } from '../../../Store/cartStore';
 
 const Navbar: React.FC = ({searchData , setSearchData}) => {
   const [showNav, setShowNav] = useState(true);
@@ -28,6 +29,7 @@ const Navbar: React.FC = ({searchData , setSearchData}) => {
   const CartRef = useRef<HTMLDivElement | null>(null);
 
   const { token } = useAuthStore();
+  const { cartCount } = useCartStore();
 
   useEffect(() => {
     setProfile(!!token); // اگر توکن وجود داشته باشد، پروفایل را به true تنظیم می‌کند
@@ -83,6 +85,7 @@ const Navbar: React.FC = ({searchData , setSearchData}) => {
       })
       .then((response) => {
         setCartBooks(response.data.data);
+        
         setLoading(false);
       })
       .catch((error) => {
@@ -120,7 +123,7 @@ const Navbar: React.FC = ({searchData , setSearchData}) => {
               <RiShoppingBag4Line size={25} className="text-gray-700" />
               <div className="absolute -top-2 -right-2 bg-red-500 rounded-full h-[19px] w-[19px] flex justify-center items-center">
                 <span className="text-white text-xs font-bold">
-                  {loading ? '...' : cartBooks.length > 0 ? cartBooks.length : '0'}
+                  {loading ? '...' : cartCount > 0 ? cartCount : '0'}
                 </span>
               </div>
             </div>

@@ -5,6 +5,7 @@ import { RiShoppingBag4Line } from 'react-icons/ri';
 import { Link } from 'react-router-dom';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useSearchStore } from '../../../Store/searchStore';
+import { useCartStore } from '../../../Store/cartStore';
 
 interface SearchModalProps {
   closeSearchModal: () => void;
@@ -26,6 +27,7 @@ const SearchModal = ({
   
 }: SearchModalProps) => {
   const profileRef = useRef(null);
+  const { cartCount } = useCartStore();
 
 
   const { register, handleSubmit, reset } = useForm<SearchFormData>();
@@ -45,8 +47,8 @@ const SearchModal = ({
           <div className="h-11 w-11">
             <img src="image.png" alt="logo" className="object-cover" />
           </div>
-          <div className="flex-grow flex justify-center items-center mx-4">
-            <form onSubmit={handleSubmit(onSubmit)} className="flex items-center w-full">
+          <div className="flex-grow flex justify-center items-center mx-4 ">
+            <form onSubmit={handleSubmit(onSubmit)} className="flex items-center justify-center w-full ">
               <input
                 type="text"
                 className="md:w-[55%] sm:w-[100%] px-4 py-2 h-9 border rounded-r-3xl"
@@ -56,19 +58,22 @@ const SearchModal = ({
               />
               <button
                 type="submit"
-                className="border rounded-l-3xl ml-2"
+                className="border rounded-l-3xl p-[7px]"
               >
-                <CiSearch />
+                <CiSearch size={22} />
               </button>
             </form>
           </div>
           <div className="hidden md:flex items-center space-x-4">
-            <div className="relative cursor-pointer ml-2">
+            {cartCount > 0 && (
+              <div className="relative cursor-pointer ml-2">
               <RiShoppingBag4Line size={25} className="text-gray-700" />
               <div className="absolute -top-2 -right-2 bg-red-500 rounded-full h-[19px] w-[19px] flex justify-center items-center">
-                <span className="text-white text-xs font-bold">07</span>
+                <span className="text-white text-xs font-bold">{cartCount}</span>
               </div>
             </div>
+            )}
+            
             {profile ? (
               <div
                 ref={profileRef}
