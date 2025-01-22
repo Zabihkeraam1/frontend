@@ -5,7 +5,9 @@ type EditModalProps<T> = {
   component: string;
 };
 
-const EditModal = <T,>({ selectedRow, closeModal }: EditModalProps<T>) => (
+const EditModal = <T,>({ selectedRow, closeModal }: EditModalProps<T>) =>{
+  console.log(selectedRow);
+  return(
   <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
     <div className="bg-white p-6 rounded-lg w-1/3">
       <h2 className="text-xl font-semibold mb-4">Edit Details</h2>
@@ -20,6 +22,7 @@ const EditModal = <T,>({ selectedRow, closeModal }: EditModalProps<T>) => (
       </div>
     </div>
   </div>
-);
+  )
+};
 
 export default EditModal;

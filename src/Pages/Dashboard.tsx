@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Sidebar from "../Layout/DashLayout/Sidebar";
-import Topbar from "../Layout/DashLayout/Topbar";
+import TopBar from "../Layout/DashLayout/TopBar";
 import DashboardContent from "../Layout/DashLayout/DashboardContent";
 const Dashboard: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -12,7 +12,7 @@ const Dashboard: React.FC = () => {
         <Sidebar isOpen={isSidebarOpen}/>
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
-        <Topbar toggleSidebar={toggleSidebar} />
+        <TopBar toggleSidebar={toggleSidebar} />
         <DashboardContent/>
       </div>
     </div>

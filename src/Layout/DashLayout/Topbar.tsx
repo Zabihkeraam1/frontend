@@ -1,8 +1,11 @@
 import React from "react";
 import { FaBars } from "react-icons/fa";
 import { IoNotificationsSharp } from "react-icons/io5";
+type Props = {
+  toggleSidebar: () => void;
+}
 
-const Topbar = ({ toggleSidebar }) => {
+const TopBar:React.FC<Props> = ({ toggleSidebar }) => {
   return (
     <div className="bg-white shadow-md h-14 px-6 flex justify-between items-center sticky top-0 z-30">
       {" "}
@@ -18,4 +21,4 @@ const Topbar = ({ toggleSidebar }) => {
   );
 };
 
-export default Topbar;
+export default TopBar;

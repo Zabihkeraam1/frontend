@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { FaEdit, FaTrash, FaEye } from "react-icons/fa";
 import { AiFillPrinter, AiOutlineCheckCircle } from "react-icons/ai";
-import axios from "axios";
+import axios from "../../axiosInstance";
 import ViewModal from "./ViewModal";
 import EditModal from "./EditModal";
 import DeleteModal from "./DeleteModal";
@@ -32,7 +32,10 @@ const ReserveTable = <T extends { id?: number }>({
   const [selectedID, setSelectedID] = useState<number | undefined>();
   const [openPrintModal, setOpenPrintModal] = useState(false);
   const [userId, setUserId] = useState<number | undefined>();
-
+  const [reload, setReload] = useState(false);
+  const refetchData = ()=>{
+    setReload(!reload);
+  }
   const openModal = (row: T, action: ActionType, id: number | undefined) => {
     setSelectedRow(row);
     setActionType(action);
@@ -60,7 +63,7 @@ const ReserveTable = <T extends { id?: number }>({
     if (!user_id) return;
     axios
       .post(
-        `http://localhost:8000/api/dashboard/users/activate_user/${user_id}`,
+        `/api/dashboard/users/activate_user/${user_id}`,
         {},
         {
           headers: {
@@ -168,6 +171,7 @@ const ReserveTable = <T extends { id?: number }>({
           closeModal={closeModal}
           itemId={selectedID}
           component={component}
+          refetchData={refetchData}
         />
       )}
       {openPrintModal && (

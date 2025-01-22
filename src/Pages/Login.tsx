@@ -2,7 +2,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../axiosInstance';
 import { useState } from 'react';
 import { useAuthStore } from '../Store/useAuthStore';
 
@@ -26,7 +26,7 @@ const Login: React.FC = () => {
   const [response, setResponse] = useState<string>('');
   const onSubmit = (data: SignInFormData) => {
     console.log(data)
-    axios.post('http://localhost:8000/api/login', data).then((response) => {
+    axios.post('/api/login', data).then((response) => {
       if(response.status === 200) {
         const loggedInUser = { email: response.data.user.email, status: response.data.user.status, type: response.data.user.type };
         const userToken = response.data.token;

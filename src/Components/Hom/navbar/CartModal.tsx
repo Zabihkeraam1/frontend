@@ -7,6 +7,7 @@ import Swal from "sweetalert2";
 import { useAuthStore } from "../../../Store/useAuthStore";
 import { HashLoader } from "react-spinners";
 import Modal from "../../Modal";
+import { useCartStore } from "../../../Store/cartStore";
 
 interface Book {
   id: number;
@@ -42,6 +43,8 @@ const CartModal: React.FC<CartModalProps> = ({ toggleCartModal }) => {
   const [bookdetails, setBookdetails] = useState<BookDetails | null>(null);
   const { token } = useAuthStore();
 
+  const { setCartCount, decrementCartCount } = useCartStore();
+
   useEffect(() => {
     axios
       .get("http://localhost:8000/api/cart/books", {
@@ -51,13 +54,14 @@ const CartModal: React.FC<CartModalProps> = ({ toggleCartModal }) => {
       })
       .then((response) => {
         setCartBooks(response.data.data);
+        setCartCount(response.data.data.length); // تنظیم تعداد کارت
         setLoading(false);
       })
       .catch((error) => {
         console.error("Error fetching cart books:", error);
         setLoading(false);
       });
-  }, [token]);
+  }, [token , setCartCount]);
 
   const handleDelete = (id: number) => {
     Swal.fire({
@@ -78,6 +82,7 @@ const CartModal: React.FC<CartModalProps> = ({ toggleCartModal }) => {
           })
           .then(() => {
             setCartBooks((prevBooks) => prevBooks.filter((book) => book.id !== id));
+            decrementCartCount(); // کاهش تعداد کارت
             Swal.fire("کتاب با موفقیت حذف شد!", "", "success");
           })
           .catch((error) => {

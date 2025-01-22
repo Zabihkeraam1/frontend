@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "../axiosInstance";
 import { useEffect, useRef, useState } from "react";
 import { useAdminAuthStore } from "../Store/useAdminAuthStore";
 import { useReactToPrint } from "react-to-print";
@@ -25,7 +25,7 @@ const PrintModal = ({ closeModal, id }: Props) => {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:8000/api/dashboard/users/activated_users/${id}`, {
+      .get(`/api/dashboard/users/activated_users/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {

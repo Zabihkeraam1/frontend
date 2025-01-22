@@ -6,7 +6,6 @@ import OnlyAdminPrivateRoute from "../Components/OnlyAdminPrivateRoute";
 import PrivateRoute from "../Components/PrivateRoute";
 import Dashboard from "../Pages/Dashboard";
 import UserProfile from "../Components/Hom/profile/studentProf/UserProfile";
-import EditForm from "../Components/Hom/profile/studentProf/EditFormProf";
 import ReservedBooks from "../Components/Hom/profile/studentProf/ReservedBooks";
 
 import Contact from "../Components/Hom/contactUs/ContactUs";
