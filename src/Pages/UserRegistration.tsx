@@ -147,7 +147,7 @@ const UserRegistration: React.FC = () => {
                         <label htmlFor="role" className="font-semibold"> نقش شما</label>
                         <select {...register("type")} id="role" className="input">
                             <option value="">نقش خود را انتخاب کنید</option>
-                            <option value="student">دانشجو</option>
+                            <option value="student">محصل</option>
                             <option value="teacher">استاد</option>
                         </select>
                         {errors.type && <span className="text-red-500">{errors.type.message}</span>}
