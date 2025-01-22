@@ -1,13 +1,13 @@
 
 import React, { useState } from "react";
-import axios from "../../axiosInstance";
+import { FaEdit, FaTrash, FaEye } from "react-icons/fa";
+import { AiFillPrinter, AiOutlineCheckCircle } from "react-icons/ai";
+import axios from "axios";
 import ViewModal from "./ViewModal";
 import EditModal from "./EditModal";
 import DeleteModal from "./DeleteModal";
 import { useAdminAuthStore } from "../../Store/useAdminAuthStore";
 import PrintModal from "../PrintModal";
-import {CheckCircle, Edit, Printer, Trash, View} from "lucide-react";
-
 
 type TableColumn<T> = {
   header: string;
@@ -18,16 +18,14 @@ type TableProps<T> = {
   columns: TableColumn<T>[];
   data: T[];
   component: string;
-  refetchData: () => void;
 };
 
 type ActionType = "view" | "edit" | "delete";
 
-const ReusableTable = <T extends { id?: number }>({
+const ReserveTable = <T extends { id?: number }>({
   columns,
   data,
   component,
-  refetchData
 }: TableProps<T>) => {
   const [selectedRow, setSelectedRow] = useState<T | null>(null);
   const [actionType, setActionType] = useState<ActionType | null>(null);
@@ -62,7 +60,7 @@ const ReusableTable = <T extends { id?: number }>({
     if (!user_id) return;
     axios
       .post(
-        `/api/dashboard/users/activate_user/${user_id}`,
+        `http://localhost:8000/api/dashboard/users/activate_user/${user_id}`,
         {},
         {
           headers: {
@@ -72,7 +70,6 @@ const ReusableTable = <T extends { id?: number }>({
       )
       .then((response) => {
         console.log("response", response);
-        refetchData();
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -96,18 +93,18 @@ const ReusableTable = <T extends { id?: number }>({
         </thead>
         <tbody>
           {data.map((row, rowIndex) => (
-            <tr key={rowIndex} className="border-b hover:bg-gray-200">
+            <tr key={rowIndex} className="border-b">
               {columns.map((column, colIndex) => (
-                <td key={colIndex} className="py-2 px-4">
+                <td key={colIndex} className="py-3 px-4">
                   {column.accessor === "actions" ? (
                     <div className="flex">
-                      <div className="flex gap-x-2">
-                        {component === "DeActiveUsers" && (
+                      <div className="bg-gray-300 rounded-md text-xl">
+                        {component === "Requests" && (
                           <button
                             className="p-1 text-blue-500 hover:text-blue-700"
                             onClick={() => handleClick(row.id)}
                           >
-                            <CheckCircle height={20} width={20}/>
+                            <AiOutlineCheckCircle />
                           </button>
                         )}
                         {component === "ActiveUsers" && (
@@ -115,26 +112,26 @@ const ReusableTable = <T extends { id?: number }>({
                             className="p-1 text-blue-500 hover:text-blue-700"
                             onClick={() => handlePrint(row.id)}
                           >
-                            <Printer height={20} width={20}/>
+                            <AiFillPrinter />
                           </button>
                         )}
                         <button
                           onClick={() => openModal(row, "view", row.id)}
-                          className="text-green-600 p-1 hover:text-green-800"
+                          className="text-blue-600 p-1 hover:text-blue-800"
                         >
-                          <View height={20} width={20}/>
+                          <FaEye />
                         </button>
                         <button
                           onClick={() => openModal(row, "edit", row.id)}
                           className="text-yellow-600 p-1 hover:text-yellow-800"
                         >
-                          <Edit height={20} width={20}/>
+                          <FaEdit />
                         </button>
                         <button
                           onClick={() => openModal(row, "delete", row.id)}
-                          className="text-red-400 p-1 hover:text-red-600"
+                          className="text-red-600 p-1 hover:text-red-800"
                         >
-                          <Trash height={20} width={20} />
+                          <FaTrash />
                         </button>
                       </div>
                     </div>
@@ -171,7 +168,6 @@ const ReusableTable = <T extends { id?: number }>({
           closeModal={closeModal}
           itemId={selectedID}
           component={component}
-          refetchData={refetchData}
         />
       )}
       {openPrintModal && (
@@ -181,18 +177,16 @@ const ReusableTable = <T extends { id?: number }>({
   );
 };
 
-// Improved typing for renderCellValue function
 const renderCellValue = <T,>(
   value: T[keyof T] | React.ReactNode
 ): React.ReactNode => {
   if (typeof value === "string" || typeof value === "number") {
-    return value; // Handle string and number types
+    return value;
   }
   if (React.isValidElement(value)) {
-    return value; // If the value is a valid React element
+    return value;
   }
-  return null; // Fallback if value is not renderable
+  return null;
 };
 
-export default ReusableTable;
-
+export default ReserveTable;

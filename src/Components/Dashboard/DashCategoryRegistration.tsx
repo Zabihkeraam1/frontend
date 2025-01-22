@@ -1,12 +1,13 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import axios from 'axios';
+import axios from '../../axiosInstance';
 import React, { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form';
 import z from 'zod';
 import { useAdminAuthStore } from '../../Store/useAdminAuthStore';
 import Swal from 'sweetalert2';
-import DashCategoryList from './DashCategoryList';
+import { Loader2 } from 'lucide-react';
+import DashCategoryTable from './DashCategoryTable';
 const Schema = z.object({
     name: z.string(),
 });
@@ -18,12 +19,15 @@ const DashShelfRegistration: React.FC = () => {
     const { token } = useAdminAuthStore();
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [update, setUpdate] = useState(false);
+    const [loading, setLoading] = useState<boolean>(false);
     const onSubmit:SubmitHandler<FormFields> = (data) => {
-        axios.post('http://localhost:8000/api/dashboard/categories', data, {
+      setLoading(true);
+        axios.post('/api/dashboard/categories', data, {
           headers: {
               Authorization: `Bearer ${token}`
           }
       }).then((response)=>{
+        setLoading(false);
         Swal.fire({
           title: 'Success!',
           text: 'Category registered successfully',
@@ -34,6 +38,7 @@ const DashShelfRegistration: React.FC = () => {
         setUpdate(!update);
         reset()
       }) .catch((error) => {
+        setLoading(false);
         // Handling the error
         if (error.response) {
           console.error("Error response:", error.response);
@@ -73,11 +78,13 @@ const DashShelfRegistration: React.FC = () => {
           type="submit"
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-16 rounded-md mt-6"
         >
-          ثبت کتگوری
+          {
+            loading ? <Loader2 className='animate-spin'/> : "ثبت کتگوری"
+          }
         </button>
       </div>
     </form>
-    <DashCategoryList update={update}/>
+    <DashCategoryTable update={update}/>
   </div>
 </div>
   )

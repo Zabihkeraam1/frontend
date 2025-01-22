@@ -1,300 +1,200 @@
 import React, { useState } from "react";
-import { FaBook, FaChevronDown, FaCog, FaFile, FaRegUser, FaUsers } from "react-icons/fa";
-import { RxDashboard } from "react-icons/rx";
-import unicon from "./image.png";
-import { Link, NavLink, useLocation } from "react-router-dom";
-import { HiArrowSmRight, HiOutlineUserGroup, HiUser } from "react-icons/hi";
-import { BiPencil } from "react-icons/bi";
-import { MdDescription } from "react-icons/md";
+import { NavLink, useLocation } from "react-router-dom";
 import { useAdminAuthStore } from "../../Store/useAdminAuthStore";
-import axios from "axios";
-
+import axios from "../../axiosInstance";
+import { ChevronDown, Settings, Users, User, LogOut, Menu, BookOpen, GraduationCap, Library, ClipboardList } from 'lucide-react';
+import logo  from './image.png';
 interface SidebarProps {
   isOpen: boolean;
+  toggleSidebar?: () => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
-  const location = useLocation();
+interface MenuItem {
+  to: string;
+  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  label: string;
+  isActive: boolean;
+}
 
-  const { type } = useAdminAuthStore();
-  const isActive = (path:string) => location.search === path;
+interface MenuGroup {
+  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  label: string;
+  items: MenuItem[];
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
+  const location = useLocation();
+  const { type, clearUser, token } = useAdminAuthStore();
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
-  const isAssistant =  type === "assistant";
-  const isEmployee = type === "employee";
   
-  
-  const toggleMenu = (menu: string) => {
+  const isActive = (path: string): boolean => location.search === path;
+  const isAssistant: boolean = type === "assistant";
+  const isEmployee: boolean = type === "employee";
+  const toggleMenu = (menu: string): void => {
     setOpenMenus((prev) => ({
       ...prev,
       [menu]: !prev[menu],
     }));
   };
-  const { clearUser, token } = useAdminAuthStore();
-  const handleSignout = () =>{
-    console.log(token);
-    axios.post("http://localhost:8000/api/dashboard/admin/logout",{}, {
-      headers: {
-        Authorization: `Bearer ${token}`
+
+  const handleSignout = (): void => {
+    axios.post(
+      "api/dashboard/admin/logout",
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
-    }).then((response)=>{
-      if(response.data.message === "Logged out successfully"){
+    ).then((response) => {
+      if (response.data.message === "Logged out successfully") {
         clearUser();
       }
-    })
-  }
+    });
+  };
+
+  const MenuItemComponent: React.FC<MenuItem> = ({ to, icon: Icon, label, isActive }) => (
+    <NavLink to={to}>
+      <li className={`flex items-center space-x-2 p-2 rounded-lg transition-all duration-200 ${
+        isActive ? "bg-white bg-opacity-10 text-white" : "text-gray-300 hover:bg-white hover:bg-opacity-5 hover:text-white"
+      }`}>
+        <Icon className="w-4 h-4 ml-1" />
+        <span>{label}</span>
+      </li>
+    </NavLink>
+  );
+
+  const MenuGroupComponent: React.FC<MenuGroup> = ({ icon: Icon, label, items }) => {
+    const isOpen = openMenus[label];
+    return (
+      <>
+        <li 
+          className="flex items-center justify-between p-2 text-gray-300 hover:bg-white hover:bg-opacity-5 hover:text-white rounded-lg cursor-pointer transition-all duration-200"
+          onClick={() => toggleMenu(label)}
+        >
+          <div className="flex items-center space-x-2">
+            <Icon className="w-4 h-4 ml-1" />
+            <span>{label}</span>
+          </div>
+          <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+        </li>
+        {isOpen && (
+          <ul className="ml-4 mt-2 border-l border-gray-700">
+            {items.map((item, index) => (
+              <MenuItemComponent key={index} {...item} />
+            ))}
+          </ul>
+        )}
+      </>
+    );
+  };
+
+  const employeeMenuGroups: MenuGroup[] = [
+    {
+      icon: BookOpen,
+      label: "کتاب‌ها",
+      items: [
+        { to: "/dashboard?tab=books", icon: BookOpen, label: "کتاب‌ها", isActive: isActive("?tab=books") },
+        { to: "/dashboard?tab=reserve-books", icon: BookOpen, label: "کتابهای رزرو شده", isActive: isActive("?tab=reserve-books") },
+        { to: "/dashboard?tab=book-registration", icon: BookOpen, label: "اضافه کردن کتاب", isActive: isActive("?tab=book-registration") },
+        { to: "/dashboard?tab=monographs", icon: BookOpen, label: "مونوگراف‌ها", isActive: isActive("?tab=monographs") },
+        { to: "/dashboard?tab=articles", icon: BookOpen, label: "مقاله‌ها", isActive: isActive("?tab=articles") },
+      ],
+    },
+    {
+      icon: Users,
+      label: "کاربران",
+      items: [
+        { to: "/dashboard?tab=users", icon: Users, label: "تمام کاربران", isActive: isActive("?tab=users") },
+        { to: "/dashboard?tab=user-registration", icon: Users, label: "اضافه کردن کاربر", isActive: isActive("?tab=user-registration") },
+        { to: "/dashboard?tab=deactive-users", icon: Users, label: "کاربران غیرفعال", isActive: isActive("?tab=deactive-users") },
+        { to: "/dashboard?tab=active-users", icon: Users, label: "کاربران فعال", isActive: isActive("?tab=active-users") },
+      ],
+    },
+    {
+      icon: ClipboardList,
+      label: "امانات",
+      items: [
+        { to: "/dashboard?tab=borrow", icon: ClipboardList, label: "لیست امانات", isActive: isActive("?tab=reserves") },
+        { to: "/dashboard?tab=requests", icon: ClipboardList, label: "درخواستی‌ها", isActive: isActive("?tab=user-registration") },
+        { to: "/dashboard?tab=returned-books", icon: ClipboardList, label: "بازگشتی", isActive: isActive("?tab=active-users") },
+      ],
+    },
+    {
+      icon: Library,
+      label: "کتابخانه",
+      items: [
+        { to: "/dashboard?tab=faculty", icon: Library, label: "پوهنځی", isActive: isActive("?tab=faculty") },
+        { to: "/dashboard?tab=department", icon: Library, label: "دیپارتمنت", isActive: isActive("?tab=department") },
+        { to: "/dashboard?tab=category", icon: Library, label: "کتگوری", isActive: isActive("?tab=category") },
+        { to: "/dashboard?tab=section", icon: Library, label: "الماری", isActive: isActive("?tab=section") },
+      ],
+    },
+    {
+      icon: GraduationCap,
+      label: "استادان",
+      items: [
+        { to: "/dashboard?tab=teachers-list", icon: GraduationCap, label: "لیست استاد", isActive: isActive("?tab=teachers-list") },
+        { to: "/dashboard?tab=overtime", icon: GraduationCap, label: "اضافه کاری", isActive: isActive("?tab=overtime") },
+      ],
+    },
+  ];
+
+  const assistantMenuGroups: MenuGroup[] = [
+    {
+      icon: Users,
+      label: "کاربران",
+      items: [
+        { to: "/dashboard?tab=employees", icon: Users, label: "تمام کاربران", isActive: isActive("?tab=employees") },
+        { to: "/dashboard?tab=user-registration", icon: Users, label: "اضافه کردن کاربر", isActive: isActive("?tab=user-registration") },
+        { to: "/dashboard?tab=deactive-employees", icon: Users, label: "کاربران غیرفعال", isActive: isActive("?tab=deactive-employees") },
+        { to: "/dashboard?tab=active-employees", icon: Users, label: "کاربران فعال", isActive: isActive("?tab=active-employees") },
+      ],
+    },
+  ];
 
   return (
-    <div
-      dir="auto"
-      className={`bg-blue-900 text-white w-52 ${isOpen ? "block" : "hidden sm:block"} sticky h-screen top-0 right-0`}
-    >
-      <div className="flex h-14 items-center bg-blue-800 justify-center w-full shadow-sm">
-        <img src={unicon} className="rounded-full h-12 w-12" alt="logo" />
-      </div>
+    <div className={`sticky h-screen top-0 right-0 inset-y-0 z-50 w-56 bg-gradient-to-br from-blue-900 to-indigo-800 text-white transition-all duration-300 ease-in-out transform ${
+      isOpen ? "translate-x-0" : "-translate-x-full"
+    } lg:translate-x-0`}>
+      <div className="flex flex-col h-full">
+        <div className="flex items-center justify-between p-2 border-b border-blue-700">
+          <img src={logo} alt="Logo" className="w-9 h-9 rounded-full" />
+          <button onClick={toggleSidebar} className="lg:hidden">
+            <Menu className="w-6 h-6" />
+          </button>
+        </div>
+        <div className="flex-grow overflow-y-auto"
+         style={{ scrollbarWidth: "none", height: "calc(100vh - 4rem)" }}>
+          <nav className="px-4 py-6 space-y-4">
+            <MenuItemComponent to="/dashboard?tab=dashboard" icon={Menu} label="داشبورد" isActive={isActive("?tab=dashboard")} />
+            <MenuItemComponent to="/dashboard?tab=profile" icon={User} label="پروفایل" isActive={isActive("?tab=profile")} />
 
-      <nav
-        className="flex flex-col h-screen overflow-y-scroll"
-        style={{ scrollbarWidth: "none", height: "calc(100vh - 4rem)" }}
-      >
-        <ul>
-          <NavLink to="/dashboard?tab=dashboard">
-            <li className={`pr-2 py-2 flex items-center cursor-pointer ${isActive("?tab=dashboard") ? "bg-blue-700 font-bold" : "hover:bg-blue-600"}`}>
-              <RxDashboard className="ml-2" /> داشبورد
-            </li>
-          </NavLink>
-          <Link to="/dashboard?tab=profile">
-            <li className={`pr-2 py-2 flex items-center cursor-pointer ${isActive("?tab=profile") ? "bg-blue-700 font-bold" : "hover:bg-blue-600"}`}>
-              <span>{<HiUser />}</span>
-              پروفایل
-            </li>
-          </Link>
+            {isEmployee && employeeMenuGroups.map((group, index) => (
+              <MenuGroupComponent key={index} {...group} />
+            ))}
 
-          {/* Books Menu */}
-          { isEmployee &&
-          (
-            <>
-            <li
-            className="pr-2 hover:bg-blue-900 flex items-center justify-between cursor-pointer"
-            onClick={() => toggleMenu("books")}
-          >
-            <div className="flex items-center hover:bg-blue-600 cursor-pointer w-full p-1">
-              <FaChevronDown
-                className={`ml-2 text-xs transition-transform ${openMenus.books ? "rotate-180" : ""}`}
-              />
-              کتاب‌ها
-            </div>
-          </li>
-          {openMenus.books && (
-            <ul className="mr-8 space-y-2">
-              <Link to="/dashboard?tab=books">
-                <li className={`pr-2 py-2 flex items-center cursor-pointer ${isActive("?tab=books") ? "bg-blue-700 font-bold" : "hover:bg-blue-600"}`}>
-                  <span>{<FaBook />}</span>
-                 کتاب‌ها
-                </li>
-              </Link>
-              <Link to="/dashboard?tab=reserve-books">
-                <li className={`pr-2 py-2 flex items-center cursor-pointer ${isActive("?tab=reserve-books") ? "bg-blue-700 font-bold" : "hover:bg-blue-600"}`}>
-                  <span>{<FaRegUser />}</span>
-                 کتابهای رزرو شده
-                </li>
-              </Link>
-              <Link to="/dashboard?tab=book-registration">
-                <li className={`pr-2 py-2 flex items-center cursor-pointer ${isActive("?tab=book-registration") ? "bg-blue-700 font-bold" : "hover:bg-blue-600"}`}>
-                  <span>{<BiPencil />}</span>
-                  اضافه کردن کتاب
-                </li>
-              </Link>
-              <Link to="/dashboard?tab=monographs">
-                <li className={`pr-2 py-2 flex items-center cursor-pointer ${isActive("?tab=monographs") ? "bg-blue-700 font-bold" : "hover:bg-blue-600"}`}>
-                  <span>{<MdDescription />}</span>
-                  مونوگراف‌ها
-                </li>
-              </Link>
-              <Link to="/dashboard?tab=articles">
-                <li className={`pr-2 py-2 flex items-center cursor-pointer ${isActive("?tab=articles") ? "bg-blue-700 font-bold" : "hover:bg-blue-600"}`}>
-                  <span>{<FaFile />}</span>
-                  مقاله‌ها
-                </li>
-              </Link>
-            </ul>
-          )}
+            {isAssistant && assistantMenuGroups.map((group, index) => (
+              <MenuGroupComponent key={index} {...group} />
+            ))}
 
-          {/* Users Menu */}
-          <li
-            className="pr-2 hover:bg-blue-900 flex items-center justify-between cursor-pointer"
-            onClick={() => toggleMenu("users")}
-          >
-            <div className="flex items-center hover:bg-blue-600 cursor-pointer w-full p-1">
-              <FaChevronDown
-                className={`ml-2 text-xs transition-transform ${openMenus.users ? "rotate-180" : ""}`}
-              />
-              کاربران
-            </div>
-          </li>
-          {openMenus.users && (
-            <ul className="mr-8 space-y-2">
-              <Link to="/dashboard?tab=users">
-                <li className={`pr-2 py-2 flex items-center cursor-pointer ${isActive("?tab=users") ? "bg-blue-700 font-bold" : "hover:bg-blue-600"}`}>
-                  <span>{<HiOutlineUserGroup />}</span>
-                  تمام کاربران
-                </li>
-              </Link>
-              <Link to="/dashboard?tab=user-registration">
-                <li className={`pr-2 py-2 flex items-center cursor-pointer ${isActive("?tab=user-registration") ? "bg-blue-700 font-bold" : "hover:bg-blue-600"}`}>
-                  <span>{<HiOutlineUserGroup />}</span>
-                  اضافه کردن کاربر
-                </li>
-              </Link>
-              <Link to="/dashboard?tab=deactive-users">
-                <li className={`pr-2 py-2 flex items-center cursor-pointer ${isActive("?tab=deactive-users") ? "bg-blue-700 font-bold" : "hover:bg-blue-600"}`}>
-                  <span>{<HiOutlineUserGroup />}</span>
-                  کاربران غیرفعال
-                </li>
-              </Link>
-              <Link to="/dashboard?tab=active-users">
-                <li className={`pr-2 py-2 flex items-center cursor-pointer ${isActive("?tab=active-users") ? "bg-blue-700 font-bold" : "hover:bg-blue-600"}`}>
-                  <span>{<HiOutlineUserGroup />}</span>
-                  کاربران فعال
-                </li>
-              </Link>
-            </ul>
-          )}
+            <MenuItemComponent to="/dashboard?tab=employee" icon={Users} label="کارمندان" isActive={isActive("?tab=employee")} />
+            <MenuItemComponent to="/dashboard?tab=settings" icon={Settings} label="تنظیمات" isActive={isActive("?tab=settings")} />
+          </nav>
+        </div>
 
-          {/* Library Menu */}
-          <li
-            className="pr-2 hover:bg-blue-900 flex items-center justify-between cursor-pointer"
-            onClick={() => toggleMenu("library")}
-          >
-            <div className="flex items-center hover:bg-blue-600 cursor-pointer w-full p-1">
-              <FaChevronDown
-                className={`ml-2 text-xs transition-transform ${openMenus.library ? "rotate-180" : ""}`}
-              />
-              کتابخانه
-            </div>
-          </li>
-          {openMenus.library && (
-            <ul className="mr-8 space-y-2">
-              <Link to="/dashboard?tab=faculty">
-                <li className={`pr-2 py-2 flex items-center cursor-pointer ${isActive("?tab=faculty") ? "bg-blue-700 font-bold" : "hover:bg-blue-600"}`}>
-                  <span>{<HiOutlineUserGroup />}</span>
-                  پوهنزی
-                </li>
-              </Link>
-              <Link to="/dashboard?tab=department">
-                <li className={`pr-2 py-2 flex items-center cursor-pointer ${isActive("?tab=department") ? "bg-blue-700 font-bold" : "hover:bg-blue-600"}`}>
-                  <span>{<HiOutlineUserGroup />}</span>
-                  دیپارتمنت
-                </li>
-              </Link>
-              <Link to="/dashboard?tab=category">
-                <li className={`pr-2 py-2 flex items-center cursor-pointer ${isActive("?tab=category") ? "bg-blue-700 font-bold" : "hover:bg-blue-600"}`}>
-                  <span>{<HiOutlineUserGroup />}</span>
-                  کتگوری
-                </li>
-              </Link>
-              <Link to="/dashboard?tab=section">
-                <li className={`pr-2 py-2 flex items-center cursor-pointer ${isActive("?tab=section") ? "bg-blue-700 font-bold" : "hover:bg-blue-600"}`}>
-                  <span>{<HiOutlineUserGroup />}</span>
-                  الماری
-                </li>
-              </Link>
-            </ul>
-          )}
-
-          {/* Professors Menu */}
-          <li
-            className="pr-2 hover:bg-blue-900 flex items-center justify-between cursor-pointer"
-            onClick={() => toggleMenu("professors")}
-          >
-            <div className="flex items-center hover:bg-blue-600 cursor-pointer w-full p-1">
-              <FaChevronDown
-                className={`ml-2 text-xs transition-transform ${openMenus.professors ? "rotate-180" : ""}`}
-              />
-              استادان
-            </div>
-          </li>
-          {openMenus.professors && (
-            <ul className="mr-8 space-y-2">
-              <li className={`pr-2 py-2 flex items-center cursor-pointer ${isActive("?tab=teachers-list") ? "bg-blue-700 font-bold" : "hover:bg-blue-600"}`}>
-                لیست استاد
-              </li>
-              <li className="flex gap-1 p-1 items-center hover:bg-blue-600 cursor-pointer">
-                اضافه کاری
-              </li>
-            </ul>
-          )}
-          </>
-          )}
-          {/* Assistant side bar option */}
-          {
-            isAssistant &&
-              (
-                <>
-                            <li
-            className="pr-2 hover:bg-blue-900 flex items-center justify-between cursor-pointer"
-            onClick={() => toggleMenu("users")}
-          >
-            <div className="flex items-center hover:bg-blue-600 cursor-pointer w-full p-1">
-              <FaChevronDown
-                className={`ml-2 text-xs transition-transform ${openMenus.users ? "rotate-180" : ""}`}
-              />
-              کاربران
-            </div>
-          </li>
-          {openMenus.users && (
-            <ul className="mr-8 space-y-2">
-              <Link to="/dashboard?tab=employees">
-                <li className={`pr-2 py-2 flex items-center cursor-pointer ${isActive("?tab=users") ? "bg-blue-700 font-bold" : "hover:bg-blue-600"}`}>
-                  <span>{<HiOutlineUserGroup />}</span>
-                  تمام کاربران
-                </li>
-              </Link>
-              <Link to="/dashboard?tab=user-registration">
-                <li className={`pr-2 py-2 flex items-center cursor-pointer ${isActive("?tab=user-registration") ? "bg-blue-700 font-bold" : "hover:bg-blue-600"}`}>
-                  <span>{<HiOutlineUserGroup />}</span>
-                  اضافه کردن کاربر
-                </li>
-              </Link>
-              <Link to="/dashboard?tab=deactive-employees">
-                <li className={`pr-2 py-2 flex items-center cursor-pointer ${isActive("?tab=deactive-users") ? "bg-blue-700 font-bold" : "hover:bg-blue-600"}`}>
-                  <span>{<HiOutlineUserGroup />}</span>
-                  کاربران غیرفعال
-                </li>
-              </Link>
-              <Link to="/dashboard?tab=active-employees">
-                <li className={`pr-2 py-2 flex items-center cursor-pointer ${isActive("?tab=active-users") ? "bg-blue-700 font-bold" : "hover:bg-blue-600"}`}>
-                  <span>{<HiOutlineUserGroup />}</span>
-                  کاربران فعال
-                </li>
-              </Link>
-            </ul>
-          )}
-                </>
-              )
-          }
-          {/* Employees Link */}
-          <li className="pr-2 py-2 hover:bg-blue-600 flex items-center cursor-pointer gap-2">
-            <FaUsers />
-            کارمندان
-          </li>
-
-          {/* Settings Link */}
-          <li className="pr-2 py-2 hover:bg-blue-600 flex items-center cursor-pointer gap-2">
-            <FaCog />
-            تنظیمات
-          </li>
-
-          {/* Logout */}
-          <li
-            className="pr-2 py-2 hover:bg-blue-600 flex items-center cursor-pointer gap-2"
+        <div className="p-4 border-t border-blue-700">
+          <button 
             onClick={handleSignout}
+            className="flex items-center space-x-2 w-full p-2 rounded-lg text-gray-300 hover:bg-white hover:bg-opacity-5 hover:text-white transition-all duration-200"
           >
-            <HiArrowSmRight />
-            خروج
-          </li>
-        </ul>
-      </nav>
+            <LogOut className="w-5 h-5" />
+            <span>خروج</span>
+          </button>
+        </div>
+      </div>
     </div>
   );
 };
+
 export default Sidebar;

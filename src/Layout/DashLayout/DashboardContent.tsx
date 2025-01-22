@@ -18,6 +18,9 @@ import DashDeActiveEmp from "../../Components/Dashboard/DashDeactiveEmp";
 import DashActiveEmp from "../../Components/Dashboard/DashActiveEmp";
 import DashEmp from "../../Components/Dashboard/DashEmp";
 import DashReservedBooks from "../../Components/Dashboard/DashReservedBooks";
+import DashReserves from "../../Components/Dashboard/DashReserves";
+import DashRequests from "../../Components/Dashboard/DashRequests";
+import DashReturned from "../../Components/Dashboard/DashReturned";
 
 const DashboardContent:React.FC = () => {
   const location = useLocation();
@@ -37,6 +40,12 @@ const DashboardContent:React.FC = () => {
       {tab === "books" && <DashBooks />}
       {/* Reserved Books */}
       {tab === "reserve-books" && <DashReservedBooks />}
+      {/* Borrow */}
+      {tab === "borrow" && <DashReserves />}
+      {/* Requests */}
+      {tab === "requests" && <DashRequests />}
+      {/* Returned books */}
+      {tab === "returned-books" && <DashReturned />}
       {/* Users */}
       {tab === "users" && <DashUsers />}
       {/* Monographs */}

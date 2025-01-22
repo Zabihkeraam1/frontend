@@ -1,13 +1,13 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
+import axios from "../../axiosInstance";
 import React, { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import z from "zod";
 import { useAdminAuthStore } from "../../Store/useAdminAuthStore";
 import Swal from "sweetalert2";
-import DashDepartmentList from "./DashDepartmentList";
+import { Loader2 } from "lucide-react";
+import DashDepartmentTable from "./DashDepartmentTable";
 
-// Updated schema to expect faculty as a number
 const Schema = z.object({
   fac_id: z.preprocess((val) => Number(val), z.number()),
   name: z.string().min(1, "این فیلد اجباری است"),
@@ -23,11 +23,12 @@ type FormFields = z.infer<typeof Schema>;
 const DashDepartment: React.FC = () => {
   const [faculties, setFaculties] = useState<Faculty[]>([]);
   const { token } = useAdminAuthStore();
-  const [errorMessage, setErrorMessage] = useState<string | null>(null); // Error state
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     axios
-      .get("http://localhost:8000/api/dashboard/faculties", {
+      .get("/api/dashboard/faculties", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -53,13 +54,15 @@ const DashDepartment: React.FC = () => {
   const [update, setUpdate] = useState(false);
 
   const onSubmit: SubmitHandler<FormFields> = (data) => {
+    setLoading(true);
     axios
-      .post("http://localhost:8000/api/dashboard/departments", data, {
+      .post("/api/dashboard/departments", data, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       })
       .then(() => {
+        setLoading(false);
         Swal.fire({
           title: 'Success!',
           text: 'Department registered successfully',
@@ -70,6 +73,7 @@ const DashDepartment: React.FC = () => {
         reset();
       })
       .catch((error) => {
+        setLoading(false);
         // Handling the error
         if (error.response) {
           console.error("Error response:", error.response);
@@ -101,14 +105,14 @@ const DashDepartment: React.FC = () => {
         >
           <div className="flex flex-col">
             <label htmlFor="faculty" className="font-semibold">
-              فاکولته
+            پوهنځی
             </label>
             <select
               {...register("fac_id")}
               id="faculty"
               className="bg-gray-200 border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none rounded-md p-2"
             >
-              <option value="">انتخاب فاکولته</option>
+              <option value="">انتخاب پوهنځی</option>
               {faculties &&
                 faculties.map((fac) => (
                   <option key={fac.id} value={fac.id}>
@@ -136,11 +140,13 @@ const DashDepartment: React.FC = () => {
               type="submit"
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-16 rounded-md mt-6"
             >
-              ثبت دیپارتمنت
+              {
+                loading? <Loader2 className="animate-spin"/> : "ثبت دیپارتمنت"
+              }
             </button>
           </div>
         </form>
-        <DashDepartmentList update={update} />
+        <DashDepartmentTable update={update} />
       </div>
     </div>
   );

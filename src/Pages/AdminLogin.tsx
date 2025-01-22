@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../axiosInstance';
 import { useState } from 'react';
 import { useAdminAuthStore } from '../Store/useAdminAuthStore';
 
@@ -18,6 +18,7 @@ type SignInFormData = z.infer<typeof signInSchema>;
 const AdminLogin: React.FC = () => {
   const { setUser, token } = useAdminAuthStore();
   console.log("Admin login", token);
+  const [ loading, setLoading ] = useState<boolean>(false);
   const {
     register,
     handleSubmit,
@@ -27,32 +28,13 @@ const AdminLogin: React.FC = () => {
   });
   const [response, setResponse] = useState<string>('');
 
-  // const { isLoggedIn, token } = useAuthStore();
-
-  // useEffect(() => {
-  //   if (isLoggedIn && token) {
-  //     console.log("User is logged in with token:", token);
-  //     // You can make authenticated requests here
-  //     // For example:
-  //     axios.get('/api/protected-route', {
-  //       headers: {
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //     }).then(response => {
-  //       console.log(response.data);
-  //     }).catch(error => {
-  //       console.error('Authentication failed:', error);
-  //     });
-  //   } else {
-  //     console.log("User is not logged in.");
-  //   }
-  // }, [isLoggedIn, token]);
-
   const onSubmit = (data: SignInFormData) => {
     console.log(data);
-    axios.post('http://localhost:8000/api/admin/login', data).then((response) => {
+    setLoading(true);
+    axios.post('/api/admin/login', data).then((response) => {
       if(response.status === 200) {
         const employee = response.data.employee?.type === 'employee';
+        setLoading(false);
         if(employee){
           const loggedInUser = { email: response.data.employee.email, status: response.data.
             employee.status, type: response.data.employee.type };
@@ -133,8 +115,8 @@ const AdminLogin: React.FC = () => {
                         <label htmlFor="role" className="login-label">نقش شما</label>
                         <select {...register("type")} id="role" className="input rounded-md">
                             <option value="">نقش خود را انتخاب کنید</option>
-                            <option value="assistant">Assistant</option>
-                            <option value="employee">Employee</option>
+                            <option value="employee">کتابخانه</option>
+                            <option value="assistant">معاونیت تحقیقات</option>
                         </select>
                         {errors.type && <span className="text-red-500 text-sm mt-1">{errors.type.message}</span>}
                     </div>
@@ -143,7 +125,7 @@ const AdminLogin: React.FC = () => {
           type="submit"
           className="w-full px-4 py-2 bg-blue-500 text-white font-medium rounded-md hover:bg-blue-600 transition-colors"
         >
-          ورود
+          {loading ? "Loading" :  "ورود"}
         </button>
         {response && <p className="text-red-500 text-center mt-2">{response}</p>}
         <p className="text-center">

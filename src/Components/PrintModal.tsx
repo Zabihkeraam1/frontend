@@ -42,24 +42,7 @@ const PrintModal = ({ closeModal, id }: Props) => {
 
   const contentRef = useRef<HTMLDivElement>(null);
   const handlePrint = useReactToPrint({
-    contentRef,
-    // content: () => contentRef.current,
-    // documentTitle: 'Library Card',
-    // onBeforeGetContent: () => {
-    //   if (contentRef.current) {
-    //     contentRef.current.style.width = '100%';
-    //     contentRef.current.style.height = '100%';
-    //   }
-    //   return new Promise<void>((resolve) => {
-    //     resolve();
-    //   });
-    // },
-    // onAfterPrint: () => {
-    //   if (contentRef.current) {
-    //     contentRef.current.style.width = '';
-    //     contentRef.current.style.height = '';
-    //   }
-    // },
+    contentRef
   });
 
   if (loading)
@@ -122,7 +105,7 @@ const PrintModal = ({ closeModal, id }: Props) => {
               Close
             </button>
             <button
-              onClick={handlePrint}
+              onClick={()=>handlePrint}
               className="py-1 px-4 bg-slate-400 text-white rounded hover:bg-slate-500"
             >
               Print

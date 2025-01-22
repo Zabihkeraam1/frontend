@@ -1,8 +1,10 @@
-import axios from "axios";
+import axios from "../../axiosInstance";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useAdminAuthStore } from "../../Store/useAdminAuthStore";
 import Swal from "sweetalert2";
+import { Loader2 } from "lucide-react";
+import { useParams } from "react-router";
 
 type FormValues = {
   title: string;
@@ -41,18 +43,29 @@ interface Category {
   id: number;
   name: string;
 }
-
-const DashBookRegistration: React.FC = () => {
+interface DashBookRegistrationProps {
+  bookId?: number;
+}
+const DashBookRegistration: React.FC<DashBookRegistrationProps> = ({ bookId }) => {
   const [faculties, setFaculties] = useState<Department[]>([]);
   const [shelves, setShelves] = useState<Shelf[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [response, setResponse] = useState<string>('');
-  const [selectedImage, setSelectedImage] = useState<File | null>(null); 
-  const [selectedFile, setSelectedFile] = useState<File | null>(null); 
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [loading, setLoading] = useState(false);
   const { token } = useAdminAuthStore();
   const [isSoft, setIsSoft] = useState(false);
-  const { register, handleSubmit, formState: { errors }, reset } = useForm<FormValues>();
+  const [isEditing, setIsEditing] = useState(false);
+  const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm<FormValues>();
+  const { id } = useParams<{ id: string }>();
   
+  useEffect(() => {
+    if (id) {
+      // Fetch book data for editing
+      console.log("Fetching data for book ID:", id); //Example fetch, replace with your actual fetch logic
+    }
+  }, [id]);
   const handleSoft = (e: ChangeEvent<HTMLSelectElement>) =>{
     console.log("Event: ", e.target.value);
     if(e.target.value === "pdf" || e.target.value === "both"){
@@ -63,14 +76,14 @@ const DashBookRegistration: React.FC = () => {
     }
   }
   useEffect(() => {
-    axios.get("http://localhost:8000/api/dashboard/departments",{
+    axios.get("/api/dashboard/departments",{
       headers: {
           Authorization: `Bearer ${token}`
       }
   }).then((response) => {
       setFaculties(response.data.data);
     });
-    axios.get("http://localhost:8000/api/dashboard/sections", {
+    axios.get("/api/dashboard/sections", {
       headers: {
           Authorization: `Bearer ${token}`
       }
@@ -78,7 +91,7 @@ const DashBookRegistration: React.FC = () => {
       setShelves(response.data.data);
       console.log(response.data.data);
     });
-    axios.get("http://localhost:8000/api/dashboard/categories", {
+    axios.get("/api/dashboard/categories", {
       headers: {
           Authorization: `Bearer ${token}`
       }
@@ -86,7 +99,24 @@ const DashBookRegistration: React.FC = () => {
       setCategories(response.data.data);
       console.log(response.data.data);
     });
-  }, []);
+    if (bookId) {
+      setIsEditing(true);
+      console.log("bookId: ", bookId);
+      axios.get(`/api/dashboard/books/{bookId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      }).then(response => {
+        const bookData = response.data.data;
+        Object.keys(bookData).forEach(key => {
+          if (key === 'image' || key === 'pdf') return;
+          setValue(key as keyof FormValues, bookData[key]);
+        });
+        if (bookData.format === 'pdf' || bookData.format === 'both') {
+          setIsSoft(true);
+        }
+      });
+    }
+
+  }, [bookId, setValue, token]);
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
@@ -128,19 +158,25 @@ const DashBookRegistration: React.FC = () => {
       formData.append("pdf", selectedFile);
       console.log(formData.values());
     }
+    setLoading(true);
     console.log(data);
-    axios
-      .post("http://localhost:8000/api/dashboard/books", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${token}`
-        },
-      })
+    setLoading(true);
+    const url = isEditing
+      ? `/api/dashboard/books/${bookId}`
+      : "/api/dashboard/books";
+    const method = isEditing ? axios.put : axios.post;
+
+    method(url, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`
+      },
+    })
       .then((response) => {
         setResponse(response.data.message);
         Swal.fire({
           title: 'Success!',
-          text: 'Book registered successfully',
+          text: isEditing ? 'Book updated successfully' : 'Book registered successfully',
           icon: 'success',
           confirmButtonText: 'OK'
         });
@@ -148,7 +184,10 @@ const DashBookRegistration: React.FC = () => {
         reset();
       }).catch((err) => {
         console.error(err);
-      });
+      })
+      .finally(() => {
+                 setLoading(false);
+              });
   };
 
   return (
@@ -264,11 +303,10 @@ const DashBookRegistration: React.FC = () => {
             )}
           </div>
 
-
           <div className="flex flex-col">
             <label className="font-semibold">تعداد</label>
             <input
-              type="text"
+              type="number"
               {...register("total", { required: "این فیلد اجباری است" })}
               className="input"
             />
@@ -346,7 +384,6 @@ const DashBookRegistration: React.FC = () => {
             )}
           </div>
 
-
           {/* NEED EDITING */}
           <div className="flex flex-col">
             <label className="font-semibold">Code</label>
@@ -361,8 +398,6 @@ const DashBookRegistration: React.FC = () => {
               </span>
             )}
           </div>
-
-          
 
           <div className="flex flex-col">
             <label className="font-semibold">اجازه امانت</label>
@@ -418,10 +453,9 @@ const DashBookRegistration: React.FC = () => {
           )
           }
 
-          <div className="flex flex-col">
+                <div className="flex flex-col col-span-3">
             <label className="font-semibold">شرح کتاب</label>
-            <input
-              type="text"
+            <textarea
               {...register("description", { required: "این فیلد اجباری است" })}
               className="input"
             />
@@ -438,7 +472,7 @@ const DashBookRegistration: React.FC = () => {
               type="submit"
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-20 rounded-md mt-4"
             >
-              ثبت کتاب
+              {loading ? <Loader2 size={20} className="animate-spin"/> : (isEditing ? "ویرایش کتاب" : "ثبت کتاب")}
             </button>
             {response && <p className="text-red-500 py-2">{response}</p>}
           </div>
@@ -449,3 +483,5 @@ const DashBookRegistration: React.FC = () => {
 };
 
 export default DashBookRegistration;
+
+

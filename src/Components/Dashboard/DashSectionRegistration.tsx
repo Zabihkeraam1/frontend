@@ -1,13 +1,12 @@
-
-
 import { zodResolver } from '@hookform/resolvers/zod';
-import axios from 'axios';
+import axios from '../../axiosInstance';
 import React, { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form';
 import z from 'zod';
 import { useAdminAuthStore } from '../../Store/useAdminAuthStore';
 import Swal from 'sweetalert2';
-import DashSectionList from './DashSectionList';
+import DashSectionTable from './DashSectionTable';
+import { Loader2 } from 'lucide-react';
 const Schema = z.object({
     section: z.string(),
 });
@@ -19,12 +18,15 @@ const DashSectionRegistration: React.FC = () => {
     const { token } = useAdminAuthStore();
     const [update, setUpdate] = useState(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [loading, setLoading] = useState<boolean>(false);
     const onSubmit:SubmitHandler<FormFields> = (data) => {
-        axios.post('http://localhost:8000/api/dashboard/sections', data, {
+      setLoading(true);
+        axios.post('/api/dashboard/sections', data, {
           headers: {
               Authorization: `Bearer ${token}`
           }
       }).then((response)=>{
+        setLoading(false);
         Swal.fire({
           title: 'Success!',
           text: 'Faculty registered successfully',
@@ -35,6 +37,7 @@ const DashSectionRegistration: React.FC = () => {
         setUpdate(!update);
         reset()
       }) .catch((error) => {
+        setLoading(false);
         // Handling the error
         if (error.response) {
           console.error("Error response:", error.response);
@@ -74,11 +77,13 @@ const DashSectionRegistration: React.FC = () => {
           type="submit"
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-16 rounded-md mt-6"
         >
-          ثبت الماری
+        {
+          loading? <Loader2 className='animate-spin'/> : 'ثبت الماری'
+        }
         </button>
       </div>
     </form>
-    <DashSectionList update={update}/>
+    <DashSectionTable update={update}/>
   </div>
 </div>
   )
