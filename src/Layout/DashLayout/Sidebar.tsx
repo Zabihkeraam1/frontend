@@ -4,6 +4,7 @@ import { useAdminAuthStore } from "../../Store/useAdminAuthStore";
 import axios from "../../axiosInstance";
 import { ChevronDown, Settings, Users, User, LogOut, Menu, BookOpen, GraduationCap, Library, ClipboardList } from 'lucide-react';
 import logo  from './image.png';
+import { RiAdminFill } from "react-icons/ri";
 interface SidebarProps {
   isOpen: boolean;
   toggleSidebar?: () => void;
@@ -95,10 +96,10 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
       label: "کتاب‌ها",
       items: [
         { to: "/dashboard?tab=books", icon: BookOpen, label: "کتاب‌ها", isActive: isActive("?tab=books") },
-        { to: "/dashboard?tab=reserve-books", icon: BookOpen, label: "کتابهای رزرو شده", isActive: isActive("?tab=reserve-books") },
+        { to: "/dashboard?tab=reserve-books", icon: BookOpen, label: "کتابهای ثبت شده", isActive: isActive("?tab=reserve-books") },
         { to: "/dashboard?tab=book-registration", icon: BookOpen, label: "اضافه کردن کتاب", isActive: isActive("?tab=book-registration") },
-        { to: "/dashboard?tab=monographs", icon: BookOpen, label: "مونوگراف‌ها", isActive: isActive("?tab=monographs") },
-        { to: "/dashboard?tab=articles", icon: BookOpen, label: "مقاله‌ها", isActive: isActive("?tab=articles") },
+        // { to: "/dashboard?tab=monographs", icon: BookOpen, label: "مونوگراف‌ها", isActive: isActive("?tab=monographs") },
+        // { to: "/dashboard?tab=articles", icon: BookOpen, label: "مقاله‌ها", isActive: isActive("?tab=articles") },
       ],
     },
     {
@@ -115,9 +116,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
       icon: ClipboardList,
       label: "امانات",
       items: [
-        { to: "/dashboard?tab=borrow", icon: ClipboardList, label: "لیست امانات", isActive: isActive("?tab=reserves") },
-        { to: "/dashboard?tab=requests", icon: ClipboardList, label: "درخواستی‌ها", isActive: isActive("?tab=user-registration") },
-        { to: "/dashboard?tab=returned-books", icon: ClipboardList, label: "بازگشتی", isActive: isActive("?tab=active-users") },
+        { to: "/dashboard?tab=borrow", icon: ClipboardList, label: "لیست امانات", isActive: isActive("?tab=borrow") },
+        { to: "/dashboard?tab=requests", icon: ClipboardList, label: "درخواستی‌ها", isActive: isActive("?tab=requests") },
+        { to: "/dashboard?tab=returned-books", icon: ClipboardList, label: "بازگشتی", isActive: isActive("?tab=returned-books") },
       ],
     },
     {
@@ -135,7 +136,13 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
       label: "استادان",
       items: [
         { to: "/dashboard?tab=teachers-list", icon: GraduationCap, label: "لیست استاد", isActive: isActive("?tab=teachers-list") },
-        { to: "/dashboard?tab=overtime", icon: GraduationCap, label: "اضافه کاری", isActive: isActive("?tab=overtime") },
+      ],
+    },
+    {
+      icon: RiAdminFill,
+      label: "ادمین",
+      items: [
+        { to: "/dashboard?tab=admin-list", icon: RiAdminFill, label: "لیست ادمین‌ها", isActive: isActive("?tab=admin-list") },
       ],
     },
   ];
@@ -178,7 +185,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
               <MenuGroupComponent key={index} {...group} />
             ))}
 
-            <MenuItemComponent to="/dashboard?tab=employee" icon={Users} label="کارمندان" isActive={isActive("?tab=employee")} />
+            {/* <MenuItemComponent to="/dashboard?tab=employee" icon={Users} label="کارمندان" isActive={isActive("?tab=employee")} /> */}
             <MenuItemComponent to="/dashboard?tab=settings" icon={Settings} label="تنظیمات" isActive={isActive("?tab=settings")} />
           </nav>
         </div>

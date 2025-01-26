@@ -1,4 +1,5 @@
 import React from 'react';
+import { FcNext, FcPrevious } from 'react-icons/fc';
 
 interface PaginationProps {
   currentPage: number;
@@ -67,7 +68,7 @@ const Pagination: React.FC<PaginationProps> = ({
                 : 'bg-white text-blue-500 hover:bg-blue-100'
             }`}
           >
-            Previous
+            <FcPrevious className='h-6 w-5'/>
           </button>
         </li>
         {getPageNumbers().map((number, index) => (
@@ -80,7 +81,7 @@ const Pagination: React.FC<PaginationProps> = ({
                 className={`px-3 py-1 rounded-md transition-colors duration-300 ${
                   currentPage === number
                     ? 'bg-blue-500 text-white'
-                    : 'bg-white text-blue-500 hover:bg-blue-100'
+                    : 'bg-blue-100 text-blue-500 hover:bg-blue-300'
                 }`}
               >
                 {number}
@@ -92,13 +93,13 @@ const Pagination: React.FC<PaginationProps> = ({
           <button
             onClick={() => onPageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
-            className={`ml-2 px-3 py-1 rounded-md transition-colors duration-300 ${
+            className={`px-3 py-1 rounded-md transition-colors duration-300 ${
               currentPage === totalPages
                 ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
                 : 'bg-white text-blue-500 hover:bg-blue-100'
             }`}
           >
-            Next
+            <FcNext className='h-6 w-5'/>
           </button>
         </li>
       </ul>

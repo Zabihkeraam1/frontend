@@ -1,20 +1,32 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@layer components{
-  .input{
-    @apply bg-gray-200 border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none  p-2
+
+@layer components {
+  .input {
+    @apply bg-gray-200 border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none p-2;
+  }
+  .login-label {
+    @apply absolute left-3 -top-2.5 bg-white px-1 text-gray-500 text-sm transition-all duration-200;
+    @apply peer-placeholder-shown:top-2 peer-placeholder-shown:left-4 peer-placeholder-shown:text-gray-400;
+    @apply peer-focus:-top-2.5 peer-focus:left-3 peer-focus:text-blue-500;
+  }
+  .edit-label {
+    @apply absolute font-sans text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-3 z-10 origin-[0] bg-white px-2;
+    @apply peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0;
+    @apply peer-focus:scale-75 peer-focus:-translate-y-4;
   }
 }
+
 body {
-    font-family: 'Vazir', sans-serif;
-  }
-  html {
-    direction: rtl;
-  } 
+  font-family: 'Vazir', sans-serif;
+}
 
+html {
+  direction: rtl;
+}
 
-  /* اضافه کردن به فایل استایل یا Tailwind */
+/* Hide scrollbar across various browsers */
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
@@ -23,46 +35,7 @@ body {
   scrollbar-width: none; /* Firefox */
 }
 
-
-@layer components{
-  .login-label{
-    @apply absolute left-3 -top-2.5 bg-white px-1 text-gray-500 text-sm transition-all duration-200
-    peer-placeholder-shown:top-2 peer-placeholder-shown:left-4 peer-placeholder-shown:text-gray-400
-    peer-focus:-top-2.5 peer-focus:left-3 peer-focus:text-blue-500
-  }
-  .edit-label{
-   @apply absolute font-sans  text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-3 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4
-  }
- 
-}
-/* مخفی کردن اسکرول‌بار در مرورگرهای مختلف */
-.hide-scrollbar {
-  scrollbar-width: none; /* فایرفاکس */
-  -ms-overflow-style: none; /* اینترنت اکسپلورر و اج قدیمی */
-}
-
-.hide-scrollbar::-webkit-scrollbar {
-  display: none; /* کروم، سافاری و نسخه‌های جدید اج */
-}
-
-/* pdf start style */
-
-.pdf-viewer-container .rpv-core__toolbar {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  z-index: 100;
-  background-color: white;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-.pdf-viewer-container .rpv-core__viewer {
-  margin-top: 50px; /* اندازه ارتفاع toolbar */
-}
-
-
-/* pdf end style */
-
-/* استایل لینک‌ها */
+/* Navigation link styles */
 .nav-link {
   position: relative;
   font-weight: 500;
@@ -71,11 +44,10 @@ body {
 }
 
 .nav-link:hover {
-  color: #4f46e5; /* رنگ برای حالت هاور */
-  transform: scale(1.05); /* کمی بزرگ‌تر شدن در هاور */
+  color: #4f46e5; /* Hover color */
+  transform: scale(1.05); /* Slightly enlarge on hover */
 }
 
-/* افکت‌هاور با خط زیرین متحرک */
 .nav-link::before {
   content: '';
   position: absolute;
@@ -83,7 +55,7 @@ body {
   left: 50%;
   width: 0;
   height: 2px;
-  background-color: #4f46e5; /* رنگ آبی-بنفش */
+  background-color: #4f46e5; /* Hover underline color */
   transition: width 0.3s ease, left 0.3s ease;
 }
 
@@ -92,56 +64,7 @@ body {
   left: 0;
 }
 
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-@layer components{
-  .input{
-    @apply bg-gray-200 border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none  p-2
-  }
-}
-body {
-    font-family: 'Vazir', sans-serif;
-  }
-  html {
-    direction: rtl;
-  } 
-
-
-  /* اضافه کردن به فایل استایل یا Tailwind */
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-}
-.scrollbar-hide {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
-}
-
-
-@layer components{
-  .login-label{
-    @apply absolute left-3 -top-2.5 bg-white px-1 text-gray-500 text-sm transition-all duration-200
-    peer-placeholder-shown:top-2 peer-placeholder-shown:left-4 peer-placeholder-shown:text-gray-400
-    peer-focus:-top-2.5 peer-focus:left-3 peer-focus:text-blue-500
-  }
-  .edit-label{
-   @apply absolute font-sans  text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-3 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4
-  }
- 
-}
-/* مخفی کردن اسکرول‌بار در مرورگرهای مختلف */
-.hide-scrollbar {
-  scrollbar-width: none; /* فایرفاکس */
-  -ms-overflow-style: none; /* اینترنت اکسپلورر و اج قدیمی */
-}
-
-.hide-scrollbar::-webkit-scrollbar {
-  display: none; /* کروم، سافاری و نسخه‌های جدید اج */
-}
-
-/* pdf start style */
-
+/* PDF viewer styles */
 .pdf-viewer-container .rpv-core__toolbar {
   position: fixed;
   top: 0;
@@ -150,9 +73,7 @@ body {
   background-color: white;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
+
 .pdf-viewer-container .rpv-core__viewer {
-  margin-top: 50px; /* اندازه ارتفاع toolbar */
+  margin-top: 50px; /* Toolbar height */
 }
-
-
-/* pdf end style */

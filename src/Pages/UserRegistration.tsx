@@ -154,9 +154,9 @@ const UserRegistration: React.FC = () => {
                     </div>
 
                     <div className="flex flex-col">
-                        <label htmlFor="faculty" className="font-semibold"> دانشکده</label>
+                        <label htmlFor="faculty" className="font-semibold">پوهنځی</label>
                         <select {...register("fac_id")} id="faculty" onChange={handleDepartment} className="input">
-                            <option value="">انتخاب فاکولته</option>
+                            <option value="">انتخاب پوهنځی</option>
                             {faculties && faculties.map((f, index) => (
                                 <option key={index} value={f.id}>{f.name}</option>
                             ))}
