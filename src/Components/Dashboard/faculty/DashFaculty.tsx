@@ -5,7 +5,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import z from "zod";
 import { useAdminAuthStore } from "../../../Store/useAdminAuthStore";
 import Swal from "sweetalert2";
-import { Loader2 } from "lucide-react";
+import { Loader } from "lucide-react";
 import DashFacultyTable from "./DashFacultyTable";
 const Schema = z.object({
   name: z.string().min(2),
@@ -89,7 +89,7 @@ const DashFaculty: React.FC = () => {
               type="submit"
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-20 rounded-md mt-6"
             >
-              {loading ? <Loader2 className="animate-spin" /> : "ثبت پوهنځی"}
+              {loading ? <Loader className="animate-spin" /> : "ثبت پوهنځی"}
             </button>
           </div>
         </form>

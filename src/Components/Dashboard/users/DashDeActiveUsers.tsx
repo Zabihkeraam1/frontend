@@ -6,6 +6,8 @@ import Pagination from "../pagination/pagination";
 import UserTable from "../userTable/userTable";
 import Swal from "sweetalert2";
 import UserDetails from "../userTable/userDetails";
+import UserRegistration from "../../../Pages/UserRegistration";
+import { Loader } from "lucide-react";
 
 interface User {
   id: number;
@@ -22,7 +24,6 @@ interface User {
   nin: string;
 }
 
-
 const DashDeActiveUsers: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -32,19 +33,23 @@ const DashDeActiveUsers: React.FC = () => {
   const { token } = useAdminAuthStore();
   const [currentPage, setCurrentPage] = useState(1);
   const [usersPerPage] = useState(10);
-    const [selectedUser, setSelectedUser] = useState<User | null>(null);
-    const [loadingDelete, setLoadingDelete] = useState<number | null>(null);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [loadingDelete, setLoadingDelete] = useState<number | null>(null);
+  const [editingUserId, setEditingUserId] = useState<number | null>(null);
   const refetchData = () => {
     setReload(!reload);
   };
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get("/api/dashboard/users/inactivated_students", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await axios.get(
+          "/api/dashboard/users/inactivated_students",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         setUsers(response.data.data);
       } catch (err) {
         setError("Failed to fetch users");
@@ -56,9 +61,8 @@ const DashDeActiveUsers: React.FC = () => {
     fetchUsers();
   }, [token, reload]);
 
-  const handleEdit = (id: number) => {
-    // Implement edit functionality
-    console.log(`Editing user with id: ${id}`);
+  const handleEdit = async (id: number) => {
+    setEditingUserId(id);
   };
   const handleView = (id: number) => {
     const userToView = users.find((user) => user.id === id);
@@ -85,8 +89,8 @@ const DashDeActiveUsers: React.FC = () => {
         // Implement delete functionality
         axios.delete(`/api/dashboard/users/destroy/${id}`, {
           headers: {
-            Authorization: `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         });
         setUsers(users.filter((user) => user.id !== id));
         Swal.fire("حذف شد", "موفقانه حذف گردید.", "success");
@@ -105,6 +109,10 @@ const DashDeActiveUsers: React.FC = () => {
       .includes(searchTerm.toLowerCase())
   );
 
+  if (editingUserId !== null) {
+    return <UserRegistration userId={editingUserId} />;
+  }
+  // Pagination
   const indexOfLastUser = currentPage * usersPerPage;
   const indexOfFirstUser = indexOfLastUser - usersPerPage;
   const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
@@ -133,7 +141,7 @@ const DashDeActiveUsers: React.FC = () => {
 
       {loading ? (
         <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-14 w-14 border-t-2 border-b-2 border-blue-500"></div>
+          <Loader size={32} className="animate-spin text-blue-600" />
         </div>
       ) : error ? (
         <div className="text-center text-red-500">{error}</div>

@@ -8,6 +8,7 @@ import axios from '../axiosInstance';
 import { useAuthStore } from '../Store/useAuthStore';
 import Swal from 'sweetalert2';
 import { Loader2 } from 'lucide-react';
+import { useAdminAuthStore } from '../Store/useAdminAuthStore';
 
 const schema = z.object({
     firstName: z.string().min(1, 'نام الزامی است'),
@@ -21,8 +22,16 @@ const schema = z.object({
     original_residence: z.string().min(1, 'آدرس قبلی شما ضروری مباشد'),
     fac_id: z.preprocess((val) => Number(val), z.number()),
     dep_id: z.preprocess((val) => Number(val), z.number()),
-    image: z.preprocess((val) => (val instanceof FileList ? val[0] : val), z.instanceof(File, { message: 'لطفاً عکس خود را آپلود کنید' })),
-    type: z.string().min(1, 'Role is required'),
+    // image: z.preprocess((val) => (val instanceof FileList ? val[0] : val), z.instanceof(File, { message: 'لطفاً عکس خود را آپلود کنید' })),
+    image: z.optional(
+        z
+          .instanceof(File)
+          .or(z.instanceof(FileList).transform((val) => val[0]))
+          .refine((val) => val === undefined || val instanceof File, {
+            message: 'لطفاً عکس خود را آپلود کنید',
+          })
+      ),
+    type: z.string().min(1, 'نقش شما ضروری میباشد'),
 });
 
 interface Faculty{
@@ -36,28 +45,27 @@ interface Department{
     name: string;
 }
 
-
 type FormFields = z.infer<typeof schema>; 
-const UserRegistration: React.FC = () => {
+
+interface UserRegistrationProps {
+    userId?: number;
+  }
+const UserRegistration: React.FC<UserRegistrationProps> = ({userId}) => {
     const { setUser } = useAuthStore();
     const [loading, setLoading] = useState<boolean>(false);
     const navigate = useNavigate();
     const [faculties, setFaculties] = useState<Faculty[]>([]);
     const [selectedFac, setSelectedFac] = useState<Faculty>();
     const [ response, setResponse] = useState<string>();
-    const [selectedImage, setSelectedImage] = useState<File | null>(null); 
-    const { register, handleSubmit, formState: { errors }, reset }= useForm<FormFields>({
+    const [selectedImage, setSelectedImage] = useState<File | null>(null);
+    const [isEditing, setIsEditing] = useState(false);
+    const { token } = useAdminAuthStore();
+    const { register, handleSubmit, formState: { errors }, reset, setValue }= useForm<FormFields>({
         resolver: zodResolver(schema)
     });
     const location = useLocation();
-    const [tab, setTab] = useState<string>();
-    useEffect(() => {
-    const urlParams = new URLSearchParams(location.search);
-    const tabFromUrl = urlParams.get("tab");
-    if (tabFromUrl) {
-        setTab(tabFromUrl);
-    }
-    }, [location.search]);
+    const currentPath = location.pathname;
+    console.log(currentPath);
     //const selectedImage = watch('image');
     const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files.length > 0) {
@@ -78,9 +86,23 @@ const UserRegistration: React.FC = () => {
             console.log(response.data.data);
 
         });
-    }, [])
+        if (userId) {
+            setIsEditing(true);
+            console.log("userId: ", userId);
+            axios.get(`api/dashboard/users/activated_users/${userId}`, {
+              headers: { Authorization: `Bearer ${token}` }
+            }).then(response => {
+              const userData = response.data.data;
+              Object.keys(userData).forEach(key => {
+                if (key === 'image') return;
+                setValue(key as keyof FormFields, userData[key]);
+              });
+            });
+          }
+    }, [userId, setValue, token])
     // Submitting the from field
     const onSubmit: SubmitHandler<FormFields> = (data) => {
+        console.log(data);
         setLoading(true);
         const formData = new FormData();
 
@@ -96,16 +118,29 @@ const UserRegistration: React.FC = () => {
         formData.append('nin', data.nin);
         formData.append('current_residence', data.current_residence);
         formData.append('original_residence', data.original_residence);
-    
+        if(isEditing){
+            formData.append('_method', "PUT");
+            formData.append('status', "active");
+        }
         // Append image
         if (selectedImage) {
             formData.append("image", selectedImage);
           }
-        axios.post("/api/register", formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-            }
-            }).then((response) => {
+          for (const [key, value] of formData.entries()) {
+            console.log(`${key}:`, value);
+        }
+          const url = isEditing
+          ? `/api/dashboard/users/update/${userId}`
+          : "/api/register";
+        const method = isEditing ? axios.post : axios.post;
+    
+        method(url, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`
+          },
+        })
+         .then((response) => {
             console.log(response.data);
             if(response.status === 200) {
                 const loggedInUser = { email: response.data.user?.email, status: response.data.user?.status, type: response.data.user?.type };
@@ -119,7 +154,7 @@ const UserRegistration: React.FC = () => {
                     confirmButtonText: 'OK'
                   });
                 setLoading(false);
-                if(tab !== 'user-registration'){
+                if(currentPath === '/register'){
                     navigate('/')
                 }
                 setResponse('');
@@ -127,6 +162,11 @@ const UserRegistration: React.FC = () => {
             }
             }
         ).catch((err) => {
+            if (err.response) {
+                console.error('Error response:', err.response.data);
+              } else {
+                console.error('Error:', err.message);
+              }
             if (err){
             setResponse(err.response?.data?.message || 'An error occurred');
             setLoading(false);
@@ -141,7 +181,7 @@ const UserRegistration: React.FC = () => {
     return (
         <div className="p-2 flex justify-center items-center">
             <div className='flex flex-col p-2 bg-gray-100 rounded-md'>
-                <h1 className="text-3xl font-bold text-center mb-8">ثبت نام</h1>
+                <h1 className="text-3xl font-bold text-center mb-8">{isEditing ?"افزودن تغیرات" : "ثبت نام"}</h1>
                 <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-4 lg:gap-4">
                     <div className="flex flex-col">
                         <label htmlFor="role" className="font-semibold"> نقش شما</label>
@@ -234,7 +274,7 @@ const UserRegistration: React.FC = () => {
                     
                     <div className='col-span-3 flex flex-col justify-center items-center'>
                     <p className='text-red-500 mt-2'>{response}</p>
-                    <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-20 rounded-md mt-4">{loading ? <Loader2 className='animate-spin'/>: "ثبت نام"}</button>
+                    <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-20 rounded-md mt-4">{loading ? <Loader2 className='animate-spin'/>: (isEditing ?"افزودن تغیرات" : "ثبت نام")}</button>
                     <p>قبلا حساب داشته اید: <Link to={'/login'} className='text-blue-500 hover:underline mt-2'>ورود </Link></p>
                     </div>
                 </form>

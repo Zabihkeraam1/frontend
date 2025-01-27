@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import axios from '../axiosInstance';
 import { useState } from 'react';
 import { useAdminAuthStore } from '../Store/useAdminAuthStore';
+import { Loader } from 'lucide-react';
 
 const signInSchema = z.object({
   email: z.string().min(1, "Email is required").email("Invalid email format"),
@@ -122,9 +123,9 @@ const AdminLogin: React.FC = () => {
 
         <button
           type="submit"
-          className="w-full px-4 py-2 bg-blue-500 text-white font-medium rounded-md hover:bg-blue-600 transition-colors"
+          className="flex w-full items-center justify-center text-center px-4 py-2 bg-blue-500 text-white font-medium rounded-md hover:bg-blue-600 transition-colors"
         >
-          {loading ? "Loading" :  "ورود"}
+          {loading ? <Loader size={25} className='animate-spin text-white' /> :  "ورود"}
         </button>
         {response && <p className="text-red-500 text-center mt-2">{response}</p>}
         <p className="text-center">

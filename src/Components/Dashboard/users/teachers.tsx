@@ -6,6 +6,8 @@ import Swal from "sweetalert2";
 import Pagination from "../pagination/pagination";
 import UserDetails from "../userTable/userDetails";
 import UserTable from "../userTable/userTable";
+import UserRegistration from "../../../Pages/UserRegistration";
+import { Loader } from "lucide-react";
 
 interface User {
   id: number;
@@ -33,6 +35,7 @@ const Teachers: React.FC = () => {
   const { token } = useAdminAuthStore();
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [loadingDelete, setLoadingDelete] = useState<number | null>(null);
+  const [editingUserId, setEditingUserId] = useState<number | null>(null);
   const refetchData = () => {
     setReload(!reload);
   };
@@ -59,9 +62,8 @@ const Teachers: React.FC = () => {
     }
   };
 
-  const handleEdit = (id: number) => {
-    // Implement edit functionality
-    console.log(`Editing user with id: ${id}`);
+  const handleEdit = async (id: number) => {
+    setEditingUserId(id);
   };
   const handleView = (id: number) => {
     const userToView = users.find((user) => user.id === id);
@@ -108,6 +110,10 @@ const Teachers: React.FC = () => {
       .includes(searchTerm.toLowerCase())
   );
 
+  if (editingUserId !== null) {
+    return <UserRegistration userId={editingUserId} />;
+  }
+
   // Pagination
   const indexOfLastUser = currentPage * usersPerPage;
   const indexOfFirstUser = indexOfLastUser - usersPerPage;
@@ -137,7 +143,7 @@ const Teachers: React.FC = () => {
 
       {loading ? (
         <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-14 w-14 border-t-2 border-b-2 border-blue-500"></div>
+          <Loader size={32} className="animate-spin text-blue-600" />
         </div>
       ) : error ? (
         <div className="text-center text-red-500">{error}</div>

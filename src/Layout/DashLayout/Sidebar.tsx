@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useAdminAuthStore } from "../../Store/useAdminAuthStore";
 import axios from "../../axiosInstance";
-import { ChevronDown, Settings, Users, User, LogOut, Menu, BookOpen, GraduationCap, Library, ClipboardList } from 'lucide-react';
+import { ChevronDown, Settings, Users, LogOut, Menu, BookOpen, GraduationCap, Library, ClipboardList } from 'lucide-react';
 import logo  from './image.png';
 import { RiAdminFill } from "react-icons/ri";
 interface SidebarProps {
@@ -165,8 +165,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
       isOpen ? "translate-x-0" : "-translate-x-full"
     } lg:translate-x-0`}>
       <div className="flex flex-col h-full">
-        <div className="flex items-center justify-between p-2 border-b border-blue-700">
-          <img src={logo} alt="Logo" className="w-9 h-9 rounded-full" />
+        <div className="flex items-center justify-center p-2 border-b border-blue-700">
+          <img src={logo} alt="Logo" className="w-10 h-10 rounded-full" />
           <button onClick={toggleSidebar} className="lg:hidden">
             <Menu className="w-6 h-6" />
           </button>
@@ -175,7 +175,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
          style={{ scrollbarWidth: "none", height: "calc(100vh - 4rem)" }}>
           <nav className="px-4 py-6 space-y-4">
             <MenuItemComponent to="/dashboard?tab=dashboard" icon={Menu} label="داشبورد" isActive={isActive("?tab=dashboard")} />
-            <MenuItemComponent to="/dashboard?tab=profile" icon={User} label="پروفایل" isActive={isActive("?tab=profile")} />
+            {/* <MenuItemComponent to="/dashboard?tab=profile" icon={User} label="پروفایل" isActive={isActive("?tab=profile")} /> */}
 
             {isEmployee && employeeMenuGroups.map((group, index) => (
               <MenuGroupComponent key={index} {...group} />
@@ -196,7 +196,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
             className="flex items-center space-x-2 w-full p-2 rounded-lg text-gray-300 hover:bg-white hover:bg-opacity-5 hover:text-white transition-all duration-200"
           >
             <LogOut className="w-5 h-5" />
-            <span>خروج</span>
+            <span className="pr-1">خروج</span>
           </button>
         </div>
       </div>

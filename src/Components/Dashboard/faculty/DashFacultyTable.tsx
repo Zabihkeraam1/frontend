@@ -1,6 +1,7 @@
 import axios from "../../../axiosInstance";
 import React, { useEffect, useState } from "react";
 import { useAdminAuthStore } from "../../../Store/useAdminAuthStore";
+import { Loader } from "lucide-react";
 
 type Faculty = {
   id: number;
@@ -45,7 +46,7 @@ const DashFacultyTable: React.FC<Props> = ({ update }) => {
     <div className="flex mt-6 mb-6">
       {loading ? (
         <div className="flex justify-center items-center w-full py-6">
-          <div className="animate-spin h-7 w-7 border-4 border-blue-500 border-t-transparent rounded-full"></div>
+          <Loader size={32} className="animate-spin text-blue-600" />
         </div>
       ) : (
         <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-md">

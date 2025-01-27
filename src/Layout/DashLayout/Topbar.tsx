@@ -7,14 +7,15 @@ type Props = {
 
 const TopBar: React.FC<Props> = ({ toggleSidebar }) => {
   return (
-    <div className="bg-white shadow-md h-14 px-6 flex md:justify-end items-center sticky top-0 z-30">
+    <div className="bg-white shadow-md h-14 px-6 flex md:justify-between items-center sticky top-0 z-30">
+      <h1 className="text-2xl font-bold text-gray-600">داشبورد</h1>
       <button className="sm:hidden" onClick={toggleSidebar}>
         <FaBars className="h-6 w-6" />
       </button> 
       <div className="flex items-center gap-2">
         <button className="p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
           <span className="sr-only">View notifications</span>
-          <Bell className="h-6 w-6" />
+          <Bell className="h-6 w-6"/>
         </button>
         <button
           className="max-w-xs bg-white flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"

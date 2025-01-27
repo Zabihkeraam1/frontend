@@ -8,6 +8,7 @@ import Pagination from "../pagination/pagination";
 import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
 import DashBookRegistration from "./DashBookRegistration";
+import { Loader } from "lucide-react";
 
 interface Book {
   id: number;
@@ -148,7 +149,7 @@ const DashBooks: React.FC = () => {
 
       {loading ? (
         <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-500"></div>
+          <Loader size={32} className="animate-spin text-blue-600" />
         </div>
       ) : (
         <>

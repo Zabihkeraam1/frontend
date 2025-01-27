@@ -2,6 +2,7 @@ import axios from "../../../axiosInstance";
 import { useEffect, useRef, useState } from "react";
 import { useAdminAuthStore } from "../../../Store/useAdminAuthStore";
 import { useReactToPrint } from "react-to-print";
+import { Loader } from "lucide-react";
 
 interface Props {
   id: number | undefined;
@@ -10,7 +11,7 @@ interface Props {
 interface User {
   firstName: string;
   lastName: string;
-  image: string;
+  image: string | File;
   id: string;
   department: string;
   faculty: string;
@@ -42,13 +43,13 @@ const UserCard = ({ closeModal, id }: Props) => {
 
   const contentRef = useRef<HTMLDivElement>(null);
   const handlePrint = useReactToPrint({
-    contentRef
+    contentRef,
   });
 
   if (loading)
     return (
       <div className="flex justify-center items-center h-screen">
-        Loading...
+        <Loader size={32} className="animate-spin text-blue-600"/>
       </div>
     );
   if (error)
@@ -84,16 +85,18 @@ const UserCard = ({ closeModal, id }: Props) => {
                 <h1 className="">نمبر تیلفون: {user.phone}</h1>
               </div>
               <div>
-              <img
-                className="h-[100px] w-[100px] border"
-                src={
-                  typeof user.image === "string"
-                    ? user.image
-                    : URL.createObjectURL(user.image)
-                }
-                alt={`${user.firstName}'s profile`}
-              />
-              <div className="h-8 w-18 border mt-1">امضا</div>
+                <img
+                  className="h-[100px] w-[100px] border"
+                  src={
+                    typeof user.image === "string"
+                      ? user.image
+                      : user.image instanceof File
+                      ? URL.createObjectURL(user.image)
+                      : ""
+                  }
+                  alt={`${user.firstName}'s profile`}
+                />
+                <div className="h-8 w-18 border mt-1">امضا</div>
               </div>
             </div>
           </div>
@@ -105,7 +108,7 @@ const UserCard = ({ closeModal, id }: Props) => {
               Close
             </button>
             <button
-              onClick={()=>handlePrint}
+              onClick={() => handlePrint}
               className="py-1 px-4 bg-slate-400 text-white rounded hover:bg-slate-500"
             >
               Print

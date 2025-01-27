@@ -6,17 +6,26 @@ import Pagination from "../pagination/pagination";
 import BorrowTable from "../borrowTable/borrowTable";
 import Swal from "sweetalert2";
 import RequestDetails from "../borrowTable/borrowDetails";
+import { Loader } from "lucide-react";
 
 interface Request {
   id: number;
-  title: string;
-  author: string;
-  publisher: string;
+  book: string;
+  book_code: string;
+  book_status: string;
+  firstName: string;
+  lastName: string;
+  nic: string;
+  nin: string;
+  remain_book: number;
+  section: string;
+  shelf: number;
+  total_book: number;
+  user_status: string;
 }
 
-
 const DashBorrows: React.FC = () => {
-  const [books, setBooks] = useState<Request[]>([]);
+  const [requests, setRequests] = useState<Request[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [requestPerPage] = useState(10);
@@ -24,28 +33,40 @@ const DashBorrows: React.FC = () => {
   const { token } = useAdminAuthStore();
   const [selectedRequest, setSelectedRequest] = useState<Request | null>(null);
   const [loadingDelete, setLoadingDelete] = useState<number | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const refetchData = () => {
     setReload(!reload);
   };
   useEffect(() => {
-    axios.get("/api/dashboard/books", {
-      headers: {
-          Authorization: `Bearer ${token}`
+    const fetchBooks = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get(
+          "/api/dashboard/reserves/activated/users",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setRequests(response.data.data);
+      } catch (error) {
+        console.error("Error fetching books:", error);
+      } finally {
+        setLoading(false);
       }
-  }).then((response) => {
-      setBooks(response.data.data);
-      console.log(response);
-    });
-  }, [reload]);
+    };
 
+    fetchBooks();
+  }, [reload]);
 
   const handleEdit = (id: number) => {
     // Implement edit functionality
     console.log(`Editing user with id: ${id}`);
   };
   const handleView = (id: number) => {
-    const userToView = books.find((book) => book.id === id);
+    const userToView = requests.find((request) => request.id === id);
     if (userToView) {
       setSelectedRequest(userToView);
     }
@@ -72,7 +93,7 @@ const DashBorrows: React.FC = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-        setBooks(books.filter((user) => user.id !== id));
+        setRequests(requests.filter((request) => request.id !== id));
         Swal.fire("حذف شد", "موفقانه حذف گردید.", "success");
       }
     } catch (error) {
@@ -82,19 +103,19 @@ const DashBorrows: React.FC = () => {
       setLoadingDelete(null);
     }
   };
-  const filteredRequests = books.filter((book) =>
-    `${book.title} ${book.author} ${book.publisher}`
+  const filteredRequests = requests.filter((request) =>
+    `${request.book} ${request.firstName} ${request.lastName}`
       .toLowerCase()
       .includes(searchTerm.toLowerCase())
   );
 
-    // Pagination
-    const indexOfLastRequest = currentPage * requestPerPage;
-    const indexOfFirstRequest = indexOfLastRequest - requestPerPage;
-    const currentRequests = filteredRequests.slice(
-      indexOfFirstRequest,
-      indexOfLastRequest
-    );
+  // Pagination
+  const indexOfLastRequest = currentPage * requestPerPage;
+  const indexOfFirstRequest = indexOfLastRequest - requestPerPage;
+  const currentRequests = filteredRequests.slice(
+    indexOfFirstRequest,
+    indexOfLastRequest
+  );
   return (
     <div className="px-2 min-h-screen ">
       {selectedRequest && (
@@ -116,23 +137,29 @@ const DashBorrows: React.FC = () => {
           <FaSearch className="absolute left-3 top-3 text-gray-400" />
         </div>
       </header>
-      <>
-        <BorrowTable
-          requests={currentRequests}
-          onEdit={handleEdit}
-          onView={handleView}
-          onDelete={handleDelete}
-          loadingDelete={loadingDelete}
-          component="Requests"
-          refetchData={refetchData}
-        />
-        <Pagination
-          currentPage={currentPage}
-          totalItems={filteredRequests.length}
-          itemsPerPage={requestPerPage}
-          onPageChange={setCurrentPage}
-        />
-      </>
+      {loading ? (
+        <div className="flex justify-center items-center h-64">
+          <Loader size={32} className="animate-spin text-blue-600" />
+        </div>
+      ) : (
+        <>
+          <BorrowTable
+            requests={currentRequests}
+            onEdit={handleEdit}
+            onView={handleView}
+            onDelete={handleDelete}
+            loadingDelete={loadingDelete}
+            component="borrow"
+            refetchData={refetchData}
+          />
+          <Pagination
+            currentPage={currentPage}
+            totalItems={filteredRequests.length}
+            itemsPerPage={requestPerPage}
+            onPageChange={setCurrentPage}
+          />
+        </>
+      )}
     </div>
   );
 };

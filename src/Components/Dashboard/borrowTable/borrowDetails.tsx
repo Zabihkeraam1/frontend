@@ -2,9 +2,18 @@ import React from "react";
 
 interface Request {
   id: number;
-  title: string;
-  author: string;
-  publisher: string;
+  book: string;
+  book_code: string;
+  book_status: string;
+  firstName: string;
+  lastName: string;
+  nic: string;
+  nin: string;
+  remain_book: number;
+  section: string;
+  shelf: number;
+  total_book: number;
+  user_status: string;
 }
 
 const RequestDetails: React.FC<{ request: Request; onClose: () => void }> = ({
@@ -21,10 +30,40 @@ const RequestDetails: React.FC<{ request: Request; onClose: () => void }> = ({
               <strong>آی‌دی:</strong> {request.id}
             </p>
             <p>
-              <strong>نام:</strong> {request.title}
+              <strong>نام کتاب:</strong> {request.book}
             </p>
             <p>
-              <strong>تخلص:</strong> {request.author}
+              <strong>نویسنده:</strong> {request.firstName}
+            </p>
+            <p>
+              <strong>کد نمبر کتاب:</strong> {request.book_code}
+            </p>
+            <p>
+              <strong>حالت کتاب:</strong> {request.book_status}
+            </p>
+            <p>
+              <strong>تعداد کل کتاب:</strong> {request.total_book}
+            </p>
+            <p>
+              <strong>تعداد کتاب باقیمانده:</strong> {request.remain_book}
+            </p>
+            <p>
+              <strong>بخش:</strong> {request.section}
+            </p>
+            <p>
+              <strong>نمبر الماری:</strong> {request.shelf}
+            </p>
+            <p>
+              <strong>نام امانت گیرنده:</strong> {request.firstName}
+            </p>
+            <p>
+              <strong>تخلص امانت گیرنده:</strong> {request.lastName}
+            </p>
+            <p>
+              <strong>نمبر تذکره:</strong> {request.nic}
+            </p>
+            <p>
+              <strong>آی‌دی پوهنتون:</strong> {request.nin}
             </p>
           </div>
         </div>
