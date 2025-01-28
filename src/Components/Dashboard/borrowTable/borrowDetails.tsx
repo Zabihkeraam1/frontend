@@ -2,17 +2,23 @@ import React from "react";
 
 interface Request {
   id: number;
-  book: string;
+  book_title: string;
+  book_author: string;
   book_code: string;
   book_status: string;
-  firstName: string;
-  lastName: string;
-  nic: string;
-  nin: string;
   remain_book: number;
+  return_date: string;
+  total_book: number;
+  isbn: string;
+  category: string;
   section: string;
   shelf: number;
-  total_book: number;
+  user_id: number;
+  firstName: string;
+  lastName: string;
+  user_department: string;
+  nic: string;
+  nin: string;
   user_status: string;
 }
 
@@ -30,13 +36,16 @@ const RequestDetails: React.FC<{ request: Request; onClose: () => void }> = ({
               <strong>آی‌دی:</strong> {request.id}
             </p>
             <p>
-              <strong>نام کتاب:</strong> {request.book}
+              <strong>نام کتاب:</strong> {request.book_title}
             </p>
             <p>
-              <strong>نویسنده:</strong> {request.firstName}
+              <strong>نویسنده:</strong> {request.book_author}
             </p>
             <p>
               <strong>کد نمبر کتاب:</strong> {request.book_code}
+            </p>
+            <p>
+              <strong>تاریخ بازگشت:</strong> {request.return_date}
             </p>
             <p>
               <strong>حالت کتاب:</strong> {request.book_status}
@@ -46,6 +55,9 @@ const RequestDetails: React.FC<{ request: Request; onClose: () => void }> = ({
             </p>
             <p>
               <strong>تعداد کتاب باقیمانده:</strong> {request.remain_book}
+            </p>
+            <p>
+              <strong>کتگوری:</strong> {request.category}
             </p>
             <p>
               <strong>بخش:</strong> {request.section}
@@ -58,6 +70,9 @@ const RequestDetails: React.FC<{ request: Request; onClose: () => void }> = ({
             </p>
             <p>
               <strong>تخلص امانت گیرنده:</strong> {request.lastName}
+            </p>
+            <p>
+              <strong>دیپارتمنت امانت گیرنده:</strong> {request.user_department}
             </p>
             <p>
               <strong>نمبر تذکره:</strong> {request.nic}

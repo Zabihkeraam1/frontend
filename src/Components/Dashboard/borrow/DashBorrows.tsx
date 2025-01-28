@@ -10,24 +10,23 @@ import { Loader } from "lucide-react";
 
 interface Request {
   id: number;
-  book: string;
   book_title: string;
   book_author: string;
-  category: string;
-  return_date: string;
-  isbn: string;
   book_code: string;
   book_status: string;
-  user_id: string;
+  remain_book: number;
+  return_date: string;
+  total_book: number;
+  isbn: string;
+  category: string;
+  section: string;
+  shelf: number;
+  user_id: number;
   firstName: string;
   lastName: string;
   user_department: string;
   nic: string;
   nin: string;
-  remain_book: number;
-  section: string;
-  shelf: number;
-  total_book: number;
   user_status: string;
 }
 
@@ -112,11 +111,13 @@ const DashBorrows: React.FC = () => {
     }
   };
   const filteredRequests = requests.filter((request) =>
-    `${request.book} ${request.firstName} ${request.lastName}`
+    `${request.book_title} ${request.firstName} ${request.lastName}`
       .toLowerCase()
       .includes(searchTerm.toLowerCase())
   );
-
+  const handleReceived = (id: number) => {
+    console.log("Received request with id:", id);
+  };
   // Pagination
   const indexOfLastRequest = currentPage * requestPerPage;
   const indexOfFirstRequest = indexOfLastRequest - requestPerPage;
@@ -156,6 +157,7 @@ const DashBorrows: React.FC = () => {
             onEdit={handleEdit}
             onView={handleView}
             onDelete={handleDelete}
+            onReceive={handleReceived}
             loadingDelete={loadingDelete}
             component="borrow"
             refetchData={refetchData}

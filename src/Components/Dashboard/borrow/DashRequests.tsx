@@ -10,17 +10,23 @@ import { Loader } from "lucide-react";
 
 interface Request {
   id: number;
-  book: string;
+  book_title: string;
+  book_author: string;
   book_code: string;
   book_status: string;
-  firstName: string;
-  lastName: string;
-  nic: string;
-  nin: string;
   remain_book: number;
+  return_date: string;
+  total_book: number;
+  isbn: string;
+  category: string;
   section: string;
   shelf: number;
-  total_book: number;
+  user_id: number;
+  firstName: string;
+  lastName: string;
+  user_department: string;
+  nic: string;
+  nin: string;
   user_status: string;
 }
 
@@ -87,8 +93,7 @@ const DashRequests: React.FC = () => {
 
       if (result.isConfirmed) {
         setLoadingDelete(id);
-        // Implement delete functionality
-        axios.delete(`/api/dashboard/users/destroy/${id}`, {
+        axios.post(`/api/dashboard/reserves/inactive/user/delete/${id}`, {},{
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -104,8 +109,9 @@ const DashRequests: React.FC = () => {
     }
   };
 
+  const handleReceived = () => {};
   const filteredRequests = requests.filter((request) =>
-    `${request.book} ${request.firstName} ${request.lastName}`
+    `${request.book_title} ${request.firstName} ${request.lastName}`
       .toLowerCase()
       .includes(searchTerm.toLowerCase())
   );
@@ -148,6 +154,7 @@ const DashRequests: React.FC = () => {
             onEdit={handleEdit}
             onView={handleView}
             onDelete={handleDelete}
+            onReceive={handleReceived}
             loadingDelete={loadingDelete}
             component="Requests"
             refetchData={refetchData}
