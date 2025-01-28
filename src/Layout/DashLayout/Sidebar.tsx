@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useAdminAuthStore } from "../../Store/useAdminAuthStore";
 import axios from "../../axiosInstance";
 import { ChevronDown, Settings, Users, LogOut, Menu, BookOpen, GraduationCap, Library, ClipboardList } from 'lucide-react';
@@ -27,7 +27,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
   const location = useLocation();
   const { type, clearUser, token } = useAdminAuthStore();
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
-  
+  const navigate = useNavigate();
   const isActive = (path: string): boolean => location.search === path;
   const isAssistant: boolean = type === "assistant";
   const isEmployee: boolean = type === "employee";
@@ -50,6 +50,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
     ).then((response) => {
       if (response.data.message === "Logged out successfully") {
         clearUser();
+        navigate(`?tab=adminLogin`);
       }
     });
   };

@@ -11,10 +11,17 @@ import { Loader } from "lucide-react";
 interface Request {
   id: number;
   book: string;
+  book_title: string;
+  book_author: string;
+  category: string;
+  return_date: string;
+  isbn: string;
   book_code: string;
   book_status: string;
+  user_id: string;
   firstName: string;
   lastName: string;
+  user_department: string;
   nic: string;
   nin: string;
   remain_book: number;
@@ -51,6 +58,7 @@ const DashBorrows: React.FC = () => {
           }
         );
         setRequests(response.data.data);
+        console.log(response.data.data);
       } catch (error) {
         console.error("Error fetching books:", error);
       } finally {

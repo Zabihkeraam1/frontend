@@ -5,7 +5,6 @@ interface Admin {
   id: number
   name: string
   email: string
-  role: string
 }
 
 interface AdminListProps {
@@ -26,9 +25,6 @@ export const AdminTable: React.FC<AdminListProps> = ({ admins, onDeleteAdmin }) 
               ایمیل
             </th>
             <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">
-              نوعیت
-            </th>
-            <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">
               عملیات
             </th>
           </tr>
@@ -41,9 +37,6 @@ export const AdminTable: React.FC<AdminListProps> = ({ admins, onDeleteAdmin }) 
               </td>
               <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                 <p className="text-gray-900 whitespace-no-wrap">{admin.email}</p>
-              </td>
-              <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                <p className="text-gray-900 whitespace-no-wrap">{admin.role}</p>
               </td>
               <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                 <button onClick={() => onDeleteAdmin(admin.id)} className="text-red-600 hover:text-red-900 mr-2">

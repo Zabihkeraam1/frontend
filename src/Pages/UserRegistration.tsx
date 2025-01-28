@@ -275,7 +275,10 @@ const UserRegistration: React.FC<UserRegistrationProps> = ({userId}) => {
                     <div className='col-span-3 flex flex-col justify-center items-center'>
                     <p className='text-red-500 mt-2'>{response}</p>
                     <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-20 rounded-md mt-4">{loading ? <Loader2 className='animate-spin'/>: (isEditing ?"افزودن تغیرات" : "ثبت نام")}</button>
+                    {currentPath === '/register' &&
                     <p>قبلا حساب داشته اید: <Link to={'/login'} className='text-blue-500 hover:underline mt-2'>ورود </Link></p>
+                    }
+                    
                     </div>
                 </form>
             </div>
