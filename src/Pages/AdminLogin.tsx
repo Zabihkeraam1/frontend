@@ -47,7 +47,7 @@ const AdminLogin: React.FC = () => {
             const userToken = response.data.token;
             const userIsAdmin = true;
             const type = response.data.employee.type;
-            const permission = response.data.employee.permission;
+            const permission = response.data.employee.role;
             setUser(loggedInUser, userToken, userIsAdmin, type, permission);
             setResponse(response.data.message);
           } else {
@@ -59,7 +59,7 @@ const AdminLogin: React.FC = () => {
             const userToken = response.data.token;
             const userIsAdmin = true;
             const type = response.data.$assistant.type;
-            const permission = response.data.$assistant.permission;
+            const permission = response.data.$assistant.role;
             setUser(loggedInUser, userToken, userIsAdmin, type, permission);
             setResponse(response.data.message);
           }

@@ -149,7 +149,7 @@ const UserRegistration: React.FC<UserRegistrationProps> = ({userId}) => {
                 setUser(loggedInUser, userToken, isLoggedIn);
                 Swal.fire({
                     title: 'Success!',
-                    text: 'User registered successfully',
+                    text: 'کاربر موفقانه راجستر گردید!',
                     icon: 'success',
                     confirmButtonText: 'OK'
                   });

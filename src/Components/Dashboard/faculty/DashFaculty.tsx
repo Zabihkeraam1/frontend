@@ -36,7 +36,7 @@ const DashFaculty: React.FC = () => {
         setLoading(false);
         Swal.fire({
           title: "Success!",
-          text: "Faculty registered successfully",
+          text:"پوهنځی موفقانه اضافه گردید!",
           icon: "success",
           confirmButtonText: "OK",
         });

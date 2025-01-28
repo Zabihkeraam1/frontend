@@ -29,7 +29,7 @@ const DashSectionRegistration: React.FC = () => {
         setLoading(false);
         Swal.fire({
           title: 'Success!',
-          text: 'Faculty registered successfully',
+          text: "بخش موفقانه اضافه گردید!",
           icon: 'success',
           confirmButtonText: 'OK'
         });

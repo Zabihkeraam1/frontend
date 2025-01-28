@@ -119,7 +119,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
       items: [
         { to: "/dashboard?tab=borrow", icon: ClipboardList, label: "لیست امانات", isActive: isActive("?tab=borrow") },
         { to: "/dashboard?tab=requests", icon: ClipboardList, label: "درخواستی‌ها", isActive: isActive("?tab=requests") },
-        { to: "/dashboard?tab=returned-books", icon: ClipboardList, label: "بازگشتی", isActive: isActive("?tab=returned-books") },
+        // { to: "/dashboard?tab=returned-books", icon: ClipboardList, label: "بازگشتی", isActive: isActive("?tab=returned-books") },
       ],
     },
     {

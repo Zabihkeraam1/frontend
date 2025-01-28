@@ -30,7 +30,7 @@ const DashShelfRegistration: React.FC = () => {
         setLoading(false);
         Swal.fire({
           title: 'Success!',
-          text: 'Category registered successfully',
+          text: "کتگوری موفقانه اضافه گردید!",
           icon: 'success',
           confirmButtonText: 'OK'
         });

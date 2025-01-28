@@ -65,7 +65,7 @@ const DashDepartment: React.FC = () => {
         setLoading(false);
         Swal.fire({
           title: 'Success!',
-          text: 'Department registered successfully',
+          text: "دیپارتمنت موفقانه اضافه گردید!",
           icon: 'success',
           confirmButtonText: 'OK'
         });

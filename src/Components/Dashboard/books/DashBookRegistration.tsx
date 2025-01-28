@@ -195,8 +195,8 @@ const DashBookRegistration: React.FC<DashBookRegistrationProps> = ({
         Swal.fire({
           title: "Success!",
           text: isEditing
-            ? "Book updated successfully"
-            : "Book registered successfully",
+            ? "کتاب موفقانه آپدیت گردید!"
+            : "کتاب موفقانه اضافه گردید!",
           icon: "success",
           confirmButtonText: "OK",
         });
